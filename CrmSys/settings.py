@@ -81,7 +81,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'CrmMerge',
         'USER': 'ROOT',
-        'PASSWORD': 'XCDH560',
+        'PASSWORD': 'xcdh560',
         'HOST': '127.0.0.1',
         'PORT': 3306,
     }
