@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>pop</title>
+</head>
+<body>
+<h1>pop弹窗页面</h1>
+<form method="post">
+	{% csrf_token %}
+	<input type="text" id="input" name="city">
+	<input type="submit" value="提交">
+</form>
+</body>
+</html>

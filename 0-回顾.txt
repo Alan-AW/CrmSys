@@ -1,0 +1,47 @@
+内容回顾：
+    第一部分： 权限相关
+        1.权限实现的基本流程：
+            用户登陆成功之后获取权限信息，将【权限，菜单】信息写入到session中
+            以后用户再次访问，在中间件中进行权限校验。
+            提升用户友好度，用户体验，在后台通过inclusion_tag动态生成二级菜单
+        2.使用权限：
+            - 用户登陆：权限和菜单的初始化： init_permission
+            - setting中配置中间件，白名单，session_kye
+            - load rbac
+                menu inclusion_tag 动态生成菜单
+                filter， 可以在模版中作为 if 的条件，实现粒度控制到按钮
+
+    第二部分： stark组件
+        1.如何使用
+            - 创建APP，在APP中编写一个stark.py文件
+            - 在stark.py中进行定制
+                默认配置：site.register(models.UserInfo)
+                自定义配置：class UserConfig(StarkConfig)
+                              list_display = [] 表格式列表上显示的列
+                              order_by = []     排序
+                              action_list = []  批量操作
+                              search_list = []  模糊搜索(精确搜索)
+                              list_filter = []  组合搜索
+                              add_btn = []      是否显示 添加 按钮
+                              model_form_class  自定义ModelForm
+
+                              def extra_url(self):
+                              """ 自定义扩展url
+                                  pass
+                              def get_urls(self):
+                              """ 自定义url
+                                  pass
+                              def changelist_view(self, request):
+                              """ 默认表格式list显示页面
+                                  pass
+                              def change_view(self, request):
+                              """ 默认编辑页面
+                                  pass
+                              def add_view(self, request):
+                              """ 默认添加页面
+                                  pass
+                              def delete_view(self, request):
+                              """ 默认删除页面
+                                  pass
+
+                          site.register(models.UserInfo, UserConfig)
