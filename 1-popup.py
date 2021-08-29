@@ -1,11 +1,12 @@
 """
 popup:
     主页面（要开启popup的页面）
-        绑定事件，出发pop()函数：
+        绑定事件，触发pop()函数：
         function pop() {
         window.open('add/city/', 'name', 'status=1, height=700, width=700, toolbar=0, resizeable=0');
+        window.open('add/city/', 'name1', 'status=1, height=700, width=700, toolbar=0, resizeable=0');
     }
-        open() 中的参数 'name' 如果一致，那么只会弹出一个窗口，不一致则open几次就打开几次。
+        open() 中的参数 'name' 如果一致，那么只会弹出一个窗口，不一致则open几次就打开几个窗口。
 
     popup页面（被弹出的页面）：
         <form method="post">
