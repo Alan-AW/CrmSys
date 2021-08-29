@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>pop</title>
-	<style>
+    <meta charset="UTF-8">
+    <title>pop</title>
+    <style>
         * {
             margin: 0;
             padding: 0;
@@ -17,33 +17,34 @@
             text-decoration: none;
             padding: 20px;
         }
-	</style>
+    </style>
 </head>
 <body>
 <h1>pop弹窗页面</h1>
 <div class="pop">
-	<select name="select" id="select">
-		{% for city in all_city %}
-			<option id="city" value="{{ city.pk }}">{{ city }}</option>
-		{% endfor %}
-	</select>
-	<a href="javascript:pop()">+</a>
+    <select name="select" id="select">
+        {% for city in all_city %}
+            <option id="city" value="{{ city.pk }}">{{ city }}</option>
+        {% endfor %}
+    </select>
+    <a href="javascript:pop()">+</a>
 </div>
 
 </body>
 <script>
-	function pop() {
-		window.open('add/city/', '新增', 'status=1, height=700, width=700, toolbar=0, resizeable=0');
-	}
+    /* popup开启 */
+    function pop() {
+        window.open('add/city/', '新增', 'status=1, height=700, width=700, toolbar=0, resizeable=0');
+    }
 
-	/* pop 弹窗添加成功之后将添加的数据加入到下拉框中 */
-	function addStatus(status, cityId, cityName) {
-		alert(status);
-		var tag = document.createElement('option');
-		tag.value = cityId;
-		tag.text = cityName;
-		var city = document.getElementById('select');
-		city.appendChild(tag);
-	}
+    /* pop 弹窗添加成功之后将添加的数据加入到下拉框中 */
+    function addStatus(status, cityId, cityName) {
+        alert(status);
+        var tag = document.createElement('option');
+        tag.value = cityId;
+        tag.text = cityName;
+        var city = document.getElementById('select');
+        city.appendChild(tag);
+    }
 </script>
 </html>

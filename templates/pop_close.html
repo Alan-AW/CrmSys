@@ -7,7 +7,7 @@
 <body>
 <script>
 	(function (status, cityId, cityName) {
-		opener.addStatus(status, cityId, cityName);
+		opener.addStatus(status, cityId, cityName);  /* 反向调用打开popup页面内的方法 */
 		window.close();
 	})('success!',{{ cityId }}, '{{ cityName }}');
 </script>
