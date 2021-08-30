@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crm.apps.CrmConfig',
     'app_stark.apps.AppStarkConfig',
+    'app_rbac.apps.AppRbacConfig',
 ]
 
 MIDDLEWARE = [

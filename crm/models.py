@@ -22,6 +22,8 @@ class UserInfo(models.Model):
     phone = models.CharField(verbose_name='电话', max_length=32)
     email = models.EmailField(verbose_name='邮箱', max_length=64)
     depart = models.ForeignKey(to='Department', verbose_name='所属部门', on_delete=models.CASCADE)
+    username = models.CharField(verbose_name='用户名', max_length=32)
+    password = models.CharField(verbose_name='登陆密码', max_length=64)
 
     def __str__(self):
         return self.name
@@ -69,11 +71,11 @@ class Company(models.Model):
     # limit_choices_to={'depart__title': '管理层'}
     manger = models.ForeignKey(verbose_name='项目经理', to='UserInfo', related_name='manager',
                                on_delete=models.CASCADE, limit_choices_to={'depart__title': '管理层'})
-    principal = models.ForeignKey(verbose_name='负责人', to='UserInfo', related_name='principal',
-                                  on_delete=models.CASCADE, limit_choices_to={'depart__title': '管理层'})
+    principal = models.ManyToManyField(verbose_name='负责人', to='UserInfo', related_name='principal',
+                                       limit_choices_to={'depart__title': '管理层'})
 
     # manger = models.ForeignKey(verbose_name='项目经理', to='UserInfo', related_name='manager', on_delete=models.CASCADE)
-    # principal = models.ForeignKey(verbose_name='负责人', to='UserInfo', related_name='principal', on_delete=models.CASCADE)
+    # principal = models.ManyToManyField(verbose_name='负责人', to='UserInfo', related_name='principal')
 
     memo = models.CharField(verbose_name='项目说明', max_length=256, blank=True, null=True)
 

@@ -1,0 +1,4 @@
+中间件权限组件
+配置文件要追加
+'App_rbac.middleware.rbac.RbacMiddleware',
+白名单放在配置文件中

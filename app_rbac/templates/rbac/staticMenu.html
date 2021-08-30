@@ -1,0 +1,7 @@
+<!-- 左侧一级菜单展示 -->
+<div class="static-menu">
+    {% for menu in menuList %}
+        <a href="{{ menu.url }}">
+            <span class="icon-wrap"><i class="fa {{ menu.icon }}"></i></span> {{ menu.title }}</a>
+    {% endfor %}
+</div>

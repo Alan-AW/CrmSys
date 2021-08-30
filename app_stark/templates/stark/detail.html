@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% block css %}
+	<style>
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            float: left;
+            padding: 10px;
+            padding-left: 0;
+            width: 80px;
+        }
+
+        ul li i {
+            font-size: 18px;
+            margin-left: 5px;
+            color: #66afe9;
+        }
+	</style>
+{% endblock %}
+
+{% block content %}
+	<!-- 用户详情页面，用于修改用户名和密码 -->
+	{% if not_has_user %}
+		<h1 style="color: red;">！！用户不存在！！</h1>
+	{% else %}
+		<form method="post">
+			{% csrf_token %}
+			<div class="luffy-container">
+				<p>真实姓名：{{ user_obj.name }}</p>
+				<p>用户名：<input type="text" name="username" value="{{ user_obj.username }}"></p>
+				<p>密码：<input type="text" name="password" value="{{ user_obj.password }}"></p>
+				<input type="submit" value="提交修改">
+			</div>
+		</form>
+		{% if defeat %}
+			<p style="color: red;">修改失败，参数错误！！</p>
+		{% endif %}
+	{% endif %}
+	<button onclick="history.back();">返回上一页</button>
+{% endblock %}

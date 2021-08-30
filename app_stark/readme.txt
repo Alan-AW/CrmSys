@@ -6,3 +6,4 @@ stark组件使用文档
 4. 配置路由信息：
     from app_stark.service.v1 import site
     path('stark/', site.urls),
+5. 自定制使用stark组件，进行快速的增删改查

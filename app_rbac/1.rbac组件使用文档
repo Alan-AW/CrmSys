@@ -1,0 +1,158 @@
+RBAC组件使用文档
+
+1. 拷贝App_rbac组件到项目中
+
+2. 将migrations中的数据迁移记录删除
+
+3. 业务系统中用户表结构的设计
+    3.1 业务表结构中的用户表需要跟RBAC中的用户表有继承关系（rbac继承models.py）
+    继承关系：
+        class UserInfo(models.Model):
+            .
+            .
+            class Meta:
+                abstract = True
+        修改这样之后原来rbac组件中的对用户的增删改查不可用
+        因为Django将不会生成这个表和其对应关系，这个表被整合到
+        业务系统中的用户表去了
+    或者创建一个OneToOne关系关联即：
+        业务中的用户表
+        from rbac.models import RbacUserInfo
+        class UserInfo(RbacUserInfo):
+            xxxxxx
+            .
+            .
+            ...
+    3.2 **如果业务逻辑中的用户关系较为复杂，可以放弃rbac对用户的管理
+
+4. 将业务系统中的用户表的路径写到配置文件:
+    RBAC_USER_MODEL_CLASS = 'App_name.models.UserInfo'  # 业务中的用户表
+    用于在rbac分配权限时读取业务表中的用户信息。
+
+5. 进行业务逻辑开发
+    注意事项：
+        1. 将所有的路由都设置别名 - name = 'user_list'
+            用于反向生成url以及粒度控制到按钮级别的权限控制
+
+6. 权限信息的录入
+    - 在项目url中添加rbac的路由分发：（必须设置命名空间）
+        urlpatterns = [
+            path('rbac/', include('rbac.urls', namespace='rbac')),
+        ]
+
+    - 使用rbac提供的地址进行操作
+        https://127.0.0.1:8000/rbac/menu/list/
+        https://127.0.0.1:8000/rbac/role/list/
+        https://127.0.0.1:8000/rbac/distribute/permissions/
+
+    相关配置：settings中
+        自动发现url时，排除的url
+        # 自动发现项目中的URL白名单设置
+            AUTO_DISCOVER_EXCLUDE = [
+                '/admin/.*',
+                '/logout/',
+                '/login/',
+                '/index/',
+            ]
+
+7. 设计用户登陆的逻辑｛一定要设计权限初始化｝
+    # 权限初始化
+    init_permission(user_obj, request)
+    相关的配置：settings.py中
+            PERMISSION_SESSION_KEY = 'permissionListKey'  # 用户权限URL session存储
+            MENU_SESSION_KEY = 'menuListKey'  # 权限菜单session存储
+
+8. 编写首页逻辑
+    class Index(View):
+        def get(request):
+            return render(request, 'index.html')
+    相关配置：settings.py中
+        # 需要登陆但无需权限校验的URL
+        NO_PERMISSION_LIST = [
+            '/index/',
+            'logout',
+        ]
+
+9. 通过中间键进行权限校验
+    MIDDLEWARE = [
+    ....
+    'App_rbac.middleware.rbac.RbacMiddleware',
+    ]
+
+    相关配置：settings.py中
+    # 权限校验白名单设置（无需登陆就可以访问
+        VALID_URL = [
+            '/login/',
+            '/admin/.*',
+            'logout',
+        ]
+
+10. 粒度到按钮级别的控制
+
+
+
+总结：目的是希望在任意系统中应用权限系统。
+    1. 用户登陆 + 用户首页 + 用户注销 ----> 业务逻辑
+    2. 项目业务逻辑开发
+        注意：开发时灵活的设计layout中的两个inclusion_tag
+        <div class="pg-body">
+            <div class="left-menu">
+                <!-- 一级菜单使用 menuList 二级菜单使用 multiMenu -->
+                <!-- 不管使用哪个菜单都需要传参数  request -->
+                <div class="menu-body">
+                    {% multiMenu request %}  开发过程中可以去掉，项目上线还原
+                </div>
+            </div>
+            <div class="right-body">
+                <!-- 路径导航，如果不需要路径导航，删掉这个即可 -->
+                {% breadcrumb request %}     开发过程中可以去掉，项目上线还原
+                {% block content %} {% endblock %}
+            </div>
+        </div>
+
+    3. 权限信息的录入
+    4. 配置文件
+        4.0 注册rbac这个app
+        4.1 将rbac/models中的blank = True解除注释 使得它可以被继承
+        4.2中间件
+        MIDDLEWARE = [
+            ....
+            'App_rbac.middleware.rbac.RbacMiddleware',
+        ]
+        4.3权限相关所有配置
+        # ############################### 权限相关的配置 ##############################################
+        RBAC_USER_MODEL_CLASS = 'App_web.models.UserInfo'  # 业务中的用户表
+
+        PERMISSION_SESSION_KEY = 'permissionListKey'  # 用户权限URL session存储
+
+        MENU_SESSION_KEY = 'menuListKey'  # 权限菜单session存储
+
+        VALID_URL = [  # 权限校验白名单设置
+            '/login/',
+            '/admin/.*',
+            'logout',
+        ]
+
+        # 需要登陆但无需权限校验的URL
+        NO_PERMISSION_LIST = [
+            '/index/',
+            'logout',
+        ]
+
+        # 自动发现项目中的URL白名单设置
+        AUTO_DISCOVER_EXCLUDE = [
+            '/admin/.*',
+            '/logout/',
+            '/login/',
+        ]
+
+        4.4 HTML粒度到按钮级别的控制
+
+
+
+
+
+
+
+
+

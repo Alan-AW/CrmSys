@@ -1,0 +1,13 @@
+<!-- 左侧二级菜单展示 -->
+<div class="multi-menu">
+    {% for item in menuDict.values %}
+        <div class="item">
+            <div class="title"><span class="icon-warp"><i class="fa {{ item.icon }}"></i></span>{{ item.title }}</div>
+            <div class="body {{ item.class }}">
+                {% for per in item.children %}
+                    <a href="{{ per.url }}" class="{{ per.class }}">{{ per.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>

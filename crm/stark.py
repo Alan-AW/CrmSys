@@ -28,7 +28,22 @@ class UserHandler(StarkHandler):
 
     def detail_view(self, request, user_pk):
         # 用户详情页面渲染
-        return HttpResponse('查看详细页面')
+        if request.method == 'GET':
+            user_obj = models.UserInfo.objects.filter(id=user_pk).first()
+            if user_obj:
+                return render(request, 'stark/detail.html', locals())
+            return render(request, 'stark/detail.html', {'not_has_user': True})
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if all([username, password]):
+            if len(username) >= 3:
+                if len(password) > 6:
+                    models.UserInfo.objects.filter(id=user_pk).update(username=username, password=password)
+                    return redirect(reverse('stark:crm_userinfo_list'))
+            else:
+                return render(request, 'stark/detail.html', {'defeat': True})
+        else:
+            return render(request, 'stark/detail.html', {'defeat': True})
 
     list_display = ['id', display_detail, get_choices_text('性别', 'gender'),
                     'phone', 'email', 'depart',
