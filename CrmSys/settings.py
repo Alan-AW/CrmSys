@@ -4,7 +4,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -63,7 +62,7 @@ WSGI_APPLICATION = 'CrmSys.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'CrmMerge',
+        'NAME': 'mycrm',
         'USER': 'root',
         'PASSWORD': 'xcdh560',
         'HOST': '127.0.0.1',
@@ -107,3 +106,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# rbac 组件配置
+AUTO_DISCOVER_EXCLUDE = [
+    '/admin/.*',
+    '/logout/',
+    '/login/',
+    '/index/',
+]

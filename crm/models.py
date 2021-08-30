@@ -1,4 +1,5 @@
 from django.db import models
+from app_rbac.models import UserInfo as RbacUserInfo
 
 
 class Department(models.Model):
@@ -12,7 +13,7 @@ class Department(models.Model):
         verbose_name = '部门'
 
 
-class UserInfo(models.Model):
+class UserInfo(RbacUserInfo):
     name = models.CharField(verbose_name='真实姓名', max_length=64)
     gender_choices = (
         (1, '男'),
@@ -20,10 +21,7 @@ class UserInfo(models.Model):
     )
     gender = models.IntegerField(verbose_name='性别', choices=gender_choices, default=1)
     phone = models.CharField(verbose_name='电话', max_length=32)
-    email = models.EmailField(verbose_name='邮箱', max_length=64)
     depart = models.ForeignKey(to='Department', verbose_name='所属部门', on_delete=models.CASCADE)
-    username = models.CharField(verbose_name='用户名', max_length=32)
-    password = models.CharField(verbose_name='登陆密码', max_length=64)
 
     def __str__(self):
         return self.name

@@ -8,8 +8,7 @@ RBAC组件使用文档
     3.1 业务表结构中的用户表需要跟RBAC中的用户表有继承关系（rbac继承models.py）
     继承关系：
         class UserInfo(models.Model):
-            .
-            .
+            ...
             class Meta:
                 abstract = True
         修改这样之后原来rbac组件中的对用户的增删改查不可用

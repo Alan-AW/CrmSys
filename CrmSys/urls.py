@@ -11,4 +11,6 @@ urlpatterns = [
 
     # stark 组件应用
     path('stark/', site.urls),
+    # rbac 组件应用
+    path('rbac/', include('app_rbac.urls', namespace='rbac')),
 ]
