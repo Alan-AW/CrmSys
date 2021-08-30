@@ -1,7 +1,7 @@
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import render, redirect, HttpResponse
-from app_rbac.models import UserInfo
+from crm.models import UserInfo
 from app_rbac.forms.user import UserModelForm, UpdateUserModelForm
 
 """

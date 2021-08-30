@@ -1,5 +1,5 @@
 from django import forms
-from app_rbac.models import UserInfo
+from crm.models import UserInfo
 from django.core.exceptions import ValidationError
 
 

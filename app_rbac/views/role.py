@@ -4,10 +4,11 @@ from django.views import View
 from app_rbac.forms.role import RoleModelForm
 from app_rbac.models import *
 
-
 """
     角色管理
 """
+
+
 class RoleList(View):
     """
     角色列表
@@ -71,18 +72,3 @@ class RoleDel(View):
     def post(self, request, pk):
         Role.objects.filter(id=pk).delete()  # 删除
         return redirect(self.cancelUrl)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
