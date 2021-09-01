@@ -4,6 +4,45 @@ from django.utils.safestring import mark_safe
 from app_rbac.forms.base import BootStrapModelForm
 
 
+def get_icon():
+    ICON_LIST = [
+        ['fa-hand-scissors-o', '<i aria-hidden="true" class="fa fa-hand-scissors-o"></i>'],
+        ['fa-hand-spock-o', '<i aria-hidden="true" class="fa fa-hand-spock-o"></i>'],
+        ['fa-hand-stop-o', '<i aria-hidden="true" class="fa fa-hand-stop-o"></i>'],
+        ['fa-handshake-o', '<i aria-hidden="true" class="fa fa-handshake-o"></i>'],
+        ['fa-hard-of-hearing', '<i aria-hidden="true" class="fa fa-hard-of-hearing"></i>'],
+        ['fa-hashtag', '<i aria-hidden="true" class="fa fa-hashtag"></i>'],
+        ['fa-hdd-o', '<i aria-hidden="true" class="fa fa-hdd-o"></i>'],
+        ['fa-headphones', '<i aria-hidden="true" class="fa fa-headphones"></i>'],
+        ['fa-heart', '<i aria-hidden="true" class="fa fa-heart"></i>'],
+        ['fa-heart-o', '<i aria-hidden="true" class="fa fa-heart-o"></i>'],
+        ['fa-heartbeat', '<i aria-hidden="true" class="fa fa-heartbeat"></i>'],
+        ['fa-history', '<i aria-hidden="true" class="fa fa-history"></i>'],
+        ['fa-home', '<i aria-hidden="true" class="fa fa-home"></i>'],
+        ['fa-hotel', '<i aria-hidden="true" class="fa fa-hotel"></i>'],
+        ['fa-hourglass', '<i aria-hidden="true" class="fa fa-hourglass"></i>'],
+        ['fa-hourglass-1', '<i aria-hidden="true" class="fa fa-hourglass-1"></i>'],
+        ['fa-hourglass-2', '<i aria-hidden="true" class="fa fa-hourglass-2"></i>'],
+        ['fa-hourglass-3', '<i aria-hidden="true" class="fa fa-hourglass-3"></i>'],
+        ['fa-hourglass-end', '<i aria-hidden="true" class="fa fa-hourglass-end"></i>'],
+        ['fa-hourglass-half', '<i aria-hidden="true" class="fa fa-hourglass-half"></i>'],
+        ['fa-hourglass-o', '<i aria-hidden="true" class="fa fa-hourglass-o"></i>'],
+        ['fa-hourglass-start', '<i aria-hidden="true" class="fa fa-hourglass-start"></i>'],
+        ['fa-i-cursor', '<i aria-hidden="true" class="fa fa-i-cursor"></i>'],
+        ['fa-id-badge', '<i aria-hidden="true" class="fa fa-id-badge"></i>'],
+        ['fa-id-card', '<i aria-hidden="true" class="fa fa-id-card"></i>'],
+        ['fa-id-card-o', '<i aria-hidden="true" class="fa fa-id-card-o"></i>'],
+        ['fa-image', '<i aria-hidden="true" class="fa fa-image"></i>'],
+        ['fa-mail-reply-all', '<i aria-hidden="true" class="fa fa-mail-reply-all"></i>'],
+        ['fa-reply', '<i aria-hidden="true" class="fa fa-reply"></i>'],
+        ['fa-reply-all', '<i aria-hidden="true" class="fa fa-reply-all"></i>'],
+        ['fa-retweet', '<i aria-hidden="true" class="fa fa-retweet"></i>'],
+        ['fa-wrench', '<i aria-hidden="true" class="fa fa-wrench"></i>']]
+    for item in ICON_LIST:
+        item[1] = mark_safe(item[1])
+    return ICON_LIST
+
+
 class MenuModelForm(forms.ModelForm):
     """
     一级菜单编辑表单
@@ -14,34 +53,10 @@ class MenuModelForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'icon': forms.RadioSelect(choices=[
-                ['fa-file-zip-o', mark_safe('<i class="fa fa-file-zip-o" aria-hidden="true"></i>')],
-                ['fa-gear', mark_safe('<i class="fa fa-gear" aria-hidden="true"></i>')],
-                ['fa-snowflake-o', mark_safe('<i class="fa fa-snowflake-o" aria-hidden="true"></i>')],
-                ['fa-vcard', mark_safe('<i class="fa fa-vcard" aria-hidden="true"></i>')],
-                ['fa-vcard', mark_safe('<i class="fa fa-vcard" aria-hidden="true"></i>')],
-                ['fa-window-close', mark_safe('<i class="fa fa-window-close" aria-hidden="true"></i>')],
-                ['fa-wpexplorer', mark_safe('<i class="fa fa-wpexplorer" aria-hidden="true"></i>')],
-                ['fa-bell', mark_safe('<i class="fa fa-bell" aria-hidden="true"></i>')],
-                ['fa-bomb', mark_safe('<i class="fa fa-bomb" aria-hidden="true"></i>')],
-                ['fa-calendar-times-o', mark_safe('<i class="fa fa-calendar-times-o" aria-hidden="true"></i>')],
-                ['fa-camera', mark_safe('<i class="fa fa-camera" aria-hidden="true"></i>')],
-                ['fa-child', mark_safe('<i class="fa fa-child" aria-hidden="true"></i>')],
-                ['fa-cogs', mark_safe('<i class="fa fa-cogs" aria-hidden="true"></i>')],
-                ['fa-comment', mark_safe('<i class="fa fa-comment" aria-hidden="true"></i>')],
-                ['fa-dashboard', mark_safe('<i class="fa fa-dashboard" aria-hidden="true"></i>')],
-                ['fa-envelope', mark_safe('<i class="fa fa-envelope" aria-hidden="true"></i>')],
-                ['fa-film', mark_safe('<i class="fa fa-film" aria-hidden="true"></i>')],
-                ['fa-folder-open', mark_safe('<i class="fa fa-folder-open" aria-hidden="true"></i>')],
-                ['fa-headphones', mark_safe('<i class="fa fa-headphones" aria-hidden="true"></i>')],
-                ['fa-heart', mark_safe('<i class="fa fa-heart" aria-hidden="true"></i>')],
-                ['fa-leaf', mark_safe('<i class="fa fa-leaf" aria-hidden="true"></i>')],
-                ['fa-power-off', mark_safe('<i class="fa fa-power-off" aria-hidden="true"></i>')],
-                ['fa-arrows-alt', mark_safe('<i class="fa fa-arrows-alt" aria-hidden="true"></i>')],
-                ['fa-first-order', mark_safe('<i class="fa fa-first-order" aria-hidden="true"></i>')],
-                ['fa-first-order', mark_safe('<i class="fa fa-first-order" aria-hidden="true"></i>')],
-                ['fa-first-order', mark_safe('<i class="fa fa-first-order" aria-hidden="true"></i>')],
-            ])
+            'icon': forms.RadioSelect(
+                choices=get_icon(),
+                attrs={'class': 'clearfix'}
+            )
         }
 
 
@@ -126,4 +141,3 @@ class MultiEditPermissionForm(forms.Form):
         self.fields['pid_id'].choices += models.Permission.objects.filter(pid__isnull=True).exclude(
             menu__isnull=True
         ).values_list('id', 'title')
-

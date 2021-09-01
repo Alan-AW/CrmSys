@@ -8,7 +8,10 @@ class UserModelForm(forms.ModelForm):
 
     class Meta:
         model = UserInfo
-        fields = ['name', 'email', 'password', 'confirm_password']
+        fields = ['name', 'email', 'roles',
+                  'username', 'password', 'confirm_password',
+                  'gender', 'phone', 'depart'
+                  ]
 
     def __init__(self, *args, **kwargs):
         """

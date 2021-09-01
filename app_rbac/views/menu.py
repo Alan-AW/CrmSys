@@ -1,10 +1,14 @@
 from django.shortcuts import render, redirect, HttpResponse
 from django.views import View
+from django.utils.module_loading import import_string
 from django.forms import formset_factory
+from django.conf import settings as sys
 from collections import OrderedDict
 
 from app_rbac import models
-from app_rbac.forms.menu import MenuModelForm, SecondMenuModelForm, PermissionModelForm, MultiAddPermissionForm, \
+from app_rbac.forms.menu import MenuModelForm, \
+    SecondMenuModelForm, PermissionModelForm, \
+    MultiAddPermissionForm, \
     MultiEditPermissionForm
 from app_rbac.models import *
 from app_rbac.service.urls import memoryReverse
@@ -380,9 +384,12 @@ def distribute_permissions(request):
     """
     权限的分配
     """
+    # 首先获取到业务逻辑中的用户表
+    user_class = import_string(sys.USER_MODEL_CLASS)
+
     # 获取到当前选择的用户id
     user_id = request.GET.get('uid')
-    user_obj = UserInfo.objects.filter(id=user_id).first()
+    user_obj = user_class.objects.filter(id=user_id).first()
     if not user_obj:
         user_id = None
     # 获取当前选择的角色id
@@ -427,7 +434,7 @@ def distribute_permissions(request):
         # 如果没有选择角色，那么就显示该用户的所有的权限
 
     # 获取所有的用户
-    all_user_list = UserInfo.objects.all()
+    all_user_list = user_class.objects.all()
     # 获取所有的角色
     all_role_list = Role.objects.all()
     # 构造权限的数据结构
@@ -469,7 +476,5 @@ def distribute_permissions(request):
         },
     ]
     """
-
-
 
     return render(request, 'rbac/distribute_permissions.html', locals())

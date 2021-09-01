@@ -22,7 +22,13 @@ RBAC组件使用文档
             .
             .
             ...
+    一对一关系：
+        业务models.py中的用户表加一个字段
+        from rbac.models import UserInfo as RbacUserInfo
+        user = models.OneToOneField(to="RbacUserInfo", .....)
+
     3.2 **如果业务逻辑中的用户关系较为复杂，可以放弃rbac对用户的管理
+    3.3 如果已经有了成型的代码之后，可以将rbac的用户表字段中允许为空，先把字段假如进去再做分配亦可
 
 4. 将业务系统中的用户表的路径写到配置文件:
     RBAC_USER_MODEL_CLASS = 'App_name.models.UserInfo'  # 业务中的用户表

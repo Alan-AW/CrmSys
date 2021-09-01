@@ -18,7 +18,7 @@ class Role(models.Model):
 
 class UserInfo(models.Model):
     """
-    用户表
+    基本的用户表
     """
     username = models.CharField(verbose_name='用户名', max_length=32)
     password = models.CharField(verbose_name='密码', max_length=64)
@@ -54,6 +54,9 @@ class Permission(models.Model):
 
 
 class Menu(models.Model):
+    """
+    菜单表
+    """
     title = models.CharField(verbose_name='菜单名称', max_length=32)
     icon = models.CharField(verbose_name='菜单图标', max_length=32)
 

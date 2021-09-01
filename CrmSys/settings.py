@@ -108,9 +108,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # rbac 组件配置
+
+# 业务中的用户表位置
+USER_MODEL_CLASS = 'crm.models.UserInfo'
+
+# 自动发现项目中的URL白名单设置
 AUTO_DISCOVER_EXCLUDE = [
     '/admin/.*',
     '/logout/',
     '/login/',
-    '/index/',
 ]

@@ -6,8 +6,8 @@ from app_stark.service.v1 import site
 urlpatterns = [
     # path('admin/', admin.site.urls),
     # popup 测试代码
-    path('', Index.as_view(), name='index'),
-    path('add/city/', AddCity.as_view(), name='add_city'),
+    # path('', Index.as_view(), name='index'),
+    # path('add/city/', AddCity.as_view(), name='add_city'),
 
     # stark 组件应用
     path('stark/', site.urls),

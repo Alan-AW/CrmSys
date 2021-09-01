@@ -72,5 +72,5 @@ class RbacMiddleware(MiddlewareMixin):
      问题二：
          基于问题一正则可以匹配上包含正确路由的地址，但是在二级路由输入所有符合正则的内容，这个地址任然会匹配成功
  方案三：
-     将session中保存的权限路由加上起始终止符：reg = '^%S$' % url
+     将session中保存的权限路由加上起始终止符：reg = '^%s$' % url
  '''
