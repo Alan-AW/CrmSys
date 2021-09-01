@@ -131,6 +131,8 @@ class StarkHandler(object):
         """
         value = []
         value.extend(self.list_display)
+        value.append(StarkHandler.display_edit)
+        value.append(StarkHandler.display_del)
         return value
 
     def action_multi_delete(self, request, *args, **kwargs):

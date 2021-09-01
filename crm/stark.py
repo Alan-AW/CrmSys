@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, HttpResponse, reverse
 from crm import models
 from django.utils.safestring import mark_safe
-from app_stark.service.v1 import site, StarkHandler, get_choices_text
+from app_stark.service.v1 import site, StarkHandler, get_choices_text, SearchOption
 from django.urls import path, re_path
+from crm.config.customer import CustomerHandler, PublicCustomerHandler, PrivateCustomerHandler
 
 
 class DepartmentHandler(StarkHandler):
-    list_display = ['id', 'title', StarkHandler.display_edit, StarkHandler.display_del]
+    list_display = ['id', 'title', ]
     order_list = ['id', 'title']
 
 
@@ -46,29 +47,28 @@ class UserHandler(StarkHandler):
             return render(request, 'stark/detail.html', {'defeat': True})
 
     list_display = ['id', display_detail, get_choices_text('性别', 'gender'),
-                    'phone', 'email', 'depart',
-                    StarkHandler.display_edit,
-                    StarkHandler.display_del]
+                    'phone', 'email', 'depart', ]
     order_list = ['id', 'name']
 
 
 class ProjectHandler(StarkHandler):
-    list_display = ['id', 'title', StarkHandler.display_edit, StarkHandler.display_del]
+    list_display = ['id', 'title', ]
     order_list = ['id']
 
 
 class CityHandler(StarkHandler):
-    list_display = ['id', 'name', StarkHandler.display_edit, StarkHandler.display_del]
+    list_display = ['id', 'name', ]
     order_list = ['id']
 
 
+# 分公司
 class CompanyHandler(StarkHandler):
     list_display = ['id', 'city',
                     'project', 'semester',
                     'price', 'start_date',
                     'end_date', 'manger',
                     'principal', 'memo',
-                    StarkHandler.display_edit, StarkHandler.display_del]
+                    ]
     order_list = ['id']
 
 
@@ -77,3 +77,8 @@ site.register(models.UserInfo, UserHandler)
 site.register(models.Project, ProjectHandler)
 site.register(models.City, CityHandler)
 site.register(models.Company, CompanyHandler)
+
+# 客户管理
+site.register(models.Customer, CustomerHandler)  # 所有客户的管理（最高权限）
+site.register(models.Customer, PublicCustomerHandler, 'pub')  # 公户管理
+site.register(models.Customer, PrivateCustomerHandler, 'pri')  # 私户管理
