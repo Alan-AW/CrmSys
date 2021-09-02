@@ -146,6 +146,15 @@ class StarkHandler(object):
         # 批量初始化
         return HttpResponse('批量初始化方法正在开发中!')
 
+    def get_queryset(self):
+        """
+        对公户和私户进行区分：
+        通过重写此方法可以自定制更多筛选条件用于list界面的展示
+        此方法返回的对象作为list页面的首选条件
+        :return: 返回的包含公户和私户的筛选条件的queryset对象，
+        """
+        return self.model_class.objects
+
     def changelist_view(self, request, *args, **kwargs):
         """
         数据展示视图
@@ -182,7 +191,8 @@ class StarkHandler(object):
 
         ########## 4.处理分页 ##################
         # 获取数据库中的数据(包含手动搜索和组合搜索的数据)
-        queryset = self.model_class.objects.filter(conn).filter(**search_group_condition).order_by(*order)
+        origin_queryset = self.get_queryset()
+        queryset = origin_queryset.filter(conn).filter(**search_group_condition).order_by(*order)
         # 根据URL中的page参数计算出数据的索引位置
         # 生成HTML的页码
         query_paramas = request.GET.copy()  # 拷贝URL地址get参数
@@ -249,6 +259,12 @@ class StarkHandler(object):
         预留钩子函数，当开发过程中自定制了页面编辑的字段之后，如果减少了某些字段的编辑，
         有可能导致modelform  save 的时候报错，缺少字段，那么就可以在APP下的XXXHandler类中
         重写此方法进行自定制，将没有进行展示编辑的字段在保存之前设置一个默认值。
+        ** 此外：form的save方法的内部执行了一个self.instance，这个self.instance就是当前
+        的model对象，from组件进行保存的时候前段传过来的数据都存在这个instance中，重写此方法的时候
+        可以对其进行自定制，手动添加一些参数进行保存：
+        **例如：当某个销售在私户添加客户的时候，客户表中的销售顾问可以不需要选择，而是默认当前登陆用户，
+        这时候就可以在保存之前手动添加一个当前用户id进行保存到库
+        form.instance.consultant = models.UserInfo.objects.get(id=current_user_id)
         """
         form.save()
 
@@ -452,7 +468,7 @@ class StarkSite(object):
         """
 
     def get_url(self):
-        patterns = []
+        patterns = list()
         for item in self._registry:
             model_class = item['model_class']
             handler = item['handler']

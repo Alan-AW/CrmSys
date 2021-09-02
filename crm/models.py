@@ -174,3 +174,6 @@ class Customer(models.Model):
 
     def __str__(self):
         return "姓名:{0},联系方式:{1}".format(self.name, self.qq, )
+
+    class Meta:
+        db_table = 'customer'

@@ -118,3 +118,6 @@ AUTO_DISCOVER_EXCLUDE = [
     '/logout/',
     '/login/',
 ]
+
+# CRM业务相关配置
+MAX_PRIVATE_CUSTOMER = 100  # 一个销售最多可对接的客户数量
