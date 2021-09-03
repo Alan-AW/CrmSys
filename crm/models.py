@@ -177,3 +177,26 @@ class Customer(models.Model):
 
     class Meta:
         db_table = 'customer'
+
+
+class ConsultRecord(models.Model):
+    """
+    客户跟进记录
+    """
+    customer = models.ForeignKey(verbose_name='所咨询客户', to='Customer', on_delete=models.CASCADE)
+    consultant = models.ForeignKey(verbose_name='跟踪人', to='UserInfo', on_delete=models.CASCADE)
+    date = models.DateField(verbose_name='跟进日期', auto_now_add=True)
+    note = models.TextField(verbose_name='内容/说明')
+
+    class Meta:
+        db_table = 'consultrecord'
+
+    def __str__(self):
+        return self.customer
+
+
+class PaymentRecord(models.Model):
+    """
+    支付记录
+    """
+    pass

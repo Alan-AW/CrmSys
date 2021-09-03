@@ -1,17 +1,17 @@
 from django.shortcuts import render, redirect, HttpResponse, reverse
 from crm import models
 from django.utils.safestring import mark_safe
-from app_stark.service.v1 import site, StarkHandler, get_choices_text, SearchOption
+from app_stark.service.StarkModular import site, StarkHandler, get_choices_text, SearchOption
 from django.urls import path, re_path
-from crm.config.customer import CustomerHandler, PublicCustomerHandler, PrivateCustomerHandler
+from crm.config.customer import *
 
 
-class DepartmentHandler(StarkHandler):
+class DepartmentConfig(StarkHandler):
     list_display = ['id', 'title', ]
     order_list = ['id', 'title']
 
 
-class UserHandler(StarkHandler):
+class UserConfig(StarkHandler):
     def display_detail(self, obj, is_header=None):
         # 详情页面超链接显示信息以及url反向生成
         if is_header:
@@ -51,18 +51,18 @@ class UserHandler(StarkHandler):
     order_list = ['id', 'name']
 
 
-class ProjectHandler(StarkHandler):
+class ProjectConfig(StarkHandler):
     list_display = ['id', 'title', ]
     order_list = ['id']
 
 
-class CityHandler(StarkHandler):
+class CityConfig(StarkHandler):
     list_display = ['id', 'name', ]
     order_list = ['id']
 
 
 # 分公司
-class CompanyHandler(StarkHandler):
+class CompanyConfig(StarkHandler):
     list_display = ['id', 'city',
                     'project', 'semester',
                     'price', 'start_date',
@@ -72,13 +72,15 @@ class CompanyHandler(StarkHandler):
     order_list = ['id']
 
 
-site.register(models.Department, DepartmentHandler)
-site.register(models.UserInfo, UserHandler)
-site.register(models.Project, ProjectHandler)
-site.register(models.City, CityHandler)
-site.register(models.Company, CompanyHandler)
+site.register(models.Department, DepartmentConfig)
+site.register(models.UserInfo, UserConfig)
+site.register(models.Project, ProjectConfig)
+site.register(models.City, CityConfig)
+site.register(models.Company, CompanyConfig)
 
 # 客户管理
-site.register(models.Customer, CustomerHandler)  # 所有客户的管理（最高权限）
-site.register(models.Customer, PublicCustomerHandler, 'pub')  # 公户管理
-site.register(models.Customer, PrivateCustomerHandler, 'pri')  # 私户管理
+site.register(models.Customer, CustomerConfig)  # 所有客户的管理（最高权限）
+site.register(models.Customer, PublicCustomerConfig, 'pub')  # 公户管理
+site.register(models.Customer, PrivateCustomerConfig, 'pri')  # 私户管理
+site.register(models.ConsultRecord, ConsultRecordConfig)  # 所有客户跟进记录
+site.register(models.ConsultRecord, PriConsultRecordConfig, 'pri')  # 私户跟进记录

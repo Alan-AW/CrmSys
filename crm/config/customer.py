@@ -1,15 +1,44 @@
-from app_stark.service.v1 import StarkHandler, get_choices_text, SearchOption, StarkModelForm
+from django.urls import reverse
+from django.utils.safestring import mark_safe
+from app_stark.service.StarkModular import StarkHandler, get_choices_text, SearchOption, StarkModelForm
 from django import forms
 from django.conf import settings as sys
 from django.shortcuts import HttpResponse
 from django.db import transaction  # 数据锁--事物
-from crm.models import Customer, UserInfo
+from crm.models import Customer, UserInfo, ConsultRecord
 
 
-class CustomerHandler(StarkHandler):
-    list_display = ['id', 'name', 'qq', get_choices_text('性别', 'gender'),
+class PublicForm(StarkModelForm):
+    # 对于公户的添加页面视图显示的内容
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        exclude = ['consultant', 'status']  # 排除掉销售顾问、状态
+
+
+class PrivateForm(StarkModelForm):
+    # 对于私户的添加页面视图显示的内容
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        exclude = ['consultant']
+
+
+class CustomerConfig(StarkHandler):
+    """
+    所有客户，客户管理
+    """
+    def display_follow(self, obj=None, is_header=False):
+        if is_header:
+            return '跟进记录'
+        url = reverse('stark:crm_consultrecord_list')
+        return mark_safe('<a href="%s?cid=%s">跟进记录</a>' % (url, obj.pk))
+
+    list_display = ['id', 'name', 'qq',
+                    get_choices_text('性别', 'gender'),
                     get_choices_text('状态', 'status'), 'course',
                     get_choices_text('来源', 'source'),
+                    display_follow,
                     ]
     order_list = ['id']
 
@@ -22,15 +51,10 @@ class CustomerHandler(StarkHandler):
     ]
 
 
-class PublicForm(StarkModelForm):
-    # 对于公户的添加页面视图显示的内容
-    class Meta:
-        model = Customer
-        fields = '__all__'
-        exclude = ['consultant', 'status']  # 排除掉销售顾问、状态
-
-
-class PublicCustomerHandler(StarkHandler):
+class PublicCustomerConfig(StarkHandler):
+    """
+    公户客户管理
+    """
     list_display = [StarkHandler.display_checkbox,
                     'id', 'name', 'qq', get_choices_text('性别', 'gender'),
                     get_choices_text('状态', 'status'), 'course',
@@ -86,18 +110,20 @@ class PublicCustomerHandler(StarkHandler):
     model_form_class = PublicForm
 
 
-class PrivateForm(StarkModelForm):
-    # 对于私户的添加页面视图显示的内容
-    class Meta:
-        model = Customer
-        fields = '__all__'
-        exclude = ['consultant']
+class PrivateCustomerConfig(StarkHandler):
+    """
+    私户客户管理
+    """
+    def display_follow(self, obj=None, is_header=False):
+        if is_header:
+            return '跟进记录'
+        url = reverse('stark:crm_consultrecord_pri_list')
+        return mark_safe('<a href="%s?cid=%s">跟进记录</a>' % (url, obj.pk))
 
-
-class PrivateCustomerHandler(StarkHandler):
     list_display = [StarkHandler.display_checkbox, 'id', 'name', 'qq', get_choices_text('性别', 'gender'),
                     get_choices_text('状态', 'status'), 'course',
                     get_choices_text('来源', 'source'),
+                    display_follow,
                     ]
 
     def get_list_display(self):
@@ -107,7 +133,7 @@ class PrivateCustomerHandler(StarkHandler):
         return val
 
     def multi_remove(self, request):
-        # 批量操作移除到公户
+        # 批量操作移除客户到公户
         id_list = request.POST.getlist('pk')
         current_user_id = 3
         # 将客户状态为未确认的，并且在当前登陆销售对接客户下的客户移入公户
@@ -138,3 +164,35 @@ class PrivateCustomerHandler(StarkHandler):
         current_user_id = 3
         form.instance.consultant = UserInfo.objects.get(id=current_user_id)
         return form.save()
+
+
+class ConsultRecordConfig(StarkHandler):
+    """
+    所有客户跟进记录
+    """
+    list_display = ['id', 'customer', 'date', 'note']
+    search_list = ['name__contains']
+
+    def get_queryset(self):
+        # 筛选出当前客户的所有跟进记录
+        cid = self.request.GET.get('cid')
+        if cid:
+            return ConsultRecord.objects.filter(customer_id=cid)
+        return ConsultRecord.objects
+
+
+class PriConsultRecordConfig(StarkHandler):
+    """
+    私户跟进记录
+    """
+    list_display = [StarkHandler.display_checkbox,
+                    'id', 'customer', 'date', 'note']
+    search_list = ['name__contains']
+
+    def get_queryset(self):
+        # 筛选出当前客户的所有跟进记录
+        cid = self.request.GET.get('cid')
+        current_user_id = 3
+        if cid:
+            return ConsultRecord.objects.filter(customer_id=cid, customer__consultant_id=current_user_id)
+        return ConsultRecord.objects.filter(customer__consultant=current_user_id)

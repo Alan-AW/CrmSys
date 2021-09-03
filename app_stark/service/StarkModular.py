@@ -218,7 +218,7 @@ class StarkHandler(object):
                     verbose_name = key_or_func(self, obj=None,
                                                is_header=True)  # 调用执行函数self参数需要手动进行传递。（未实例化类执行类中的方法其实就是函数的调用）
                 else:
-                    # 获取数据表中指定xxxx字段的verbos_name属性
+                    # 获取数据表中指定xxxx字段的 verbos_name 属性
                     verbose_name = self.model_class._meta.get_field(key_or_func).verbose_name
                 header_list.append(verbose_name)
         else:
@@ -234,7 +234,7 @@ class StarkHandler(object):
                         tr_list.append(key_or_func(self, obj=row, is_header=False))  # 调用执行函数self参数需要手动进行传递。
                         # （未实例化类执行类中的方法其实就是函数的调用）
                     else:
-                        tr_list.append(getattr(row, key_or_func))
+                        tr_list.append(getattr(row, str(key_or_func)))
                         # getattr() 方法默认需要传入两个参数，一个是obj对象，一个是字段名称；
                         # 相当于用row对象点上key参数(User.objects.name/User.objects.age)
             else:

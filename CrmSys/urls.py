@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, re_path, include
 from crm.views import Index, AddCity
-from app_stark.service.v1 import site
+from app_stark.service.StarkModular import site
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
