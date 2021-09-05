@@ -62,7 +62,7 @@ WSGI_APPLICATION = 'CrmSys.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mycrm',
+        'NAME': 'crm_cpn',
         'USER': 'root',
         'PASSWORD': 'xcdh560',
         'HOST': '127.0.0.1',

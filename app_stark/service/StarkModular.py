@@ -195,14 +195,14 @@ class StarkHandler(object):
         queryset = origin_queryset.filter(conn).filter(**search_group_condition).order_by(*order)
         # 根据URL中的page参数计算出数据的索引位置
         # 生成HTML的页码
-        query_paramas = request.GET.copy()  # 拷贝URL地址get参数
-        query_paramas._mutable = True  # 默认禁止修改get参数变为可修改
+        query_params = request.GET.copy()  # 拷贝URL地址get参数
+        query_params._mutable = True  # 默认禁止修改get参数变为可修改
         all_count = queryset.count()
         pager = Pagination(
             current_page=request.GET.get('page'),  # 获取到分页
             all_count=all_count,  # 统计数据库数量
             base_url=request.path_info,  # 当前访问的URL
-            query_params=query_paramas,  # 原搜索条件
+            query_params=query_params,  # 原搜索条件
             per_page=10,  # 每页显示的条数(默认显示10条)
         )
         data_list = queryset[pager.start:pager.end]  # 计算出对应的页的数据
@@ -234,7 +234,7 @@ class StarkHandler(object):
                         tr_list.append(key_or_func(self, obj=row, is_header=False))  # 调用执行函数self参数需要手动进行传递。
                         # （未实例化类执行类中的方法其实就是函数的调用）
                     else:
-                        tr_list.append(getattr(row, str(key_or_func)))
+                        tr_list.append(getattr(row, key_or_func))
                         # getattr() 方法默认需要传入两个参数，一个是obj对象，一个是字段名称；
                         # 相当于用row对象点上key参数(User.objects.name/User.objects.age)
             else:

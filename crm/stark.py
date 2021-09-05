@@ -47,7 +47,7 @@ class UserConfig(StarkHandler):
             return render(request, 'stark/detail.html', {'defeat': True})
 
     list_display = ['id', display_detail, get_choices_text('性别', 'gender'),
-                    'phone', 'email', 'depart', ]
+                    'phone', 'email', 'depart']
     order_list = ['id', 'name']
 
 
@@ -67,7 +67,7 @@ class CompanyConfig(StarkHandler):
                     'project', 'semester',
                     'price', 'start_date',
                     'end_date', 'manger',
-                    'principal', 'memo',
+                    'memo',
                     ]
     order_list = ['id']
 
@@ -84,3 +84,5 @@ site.register(models.Customer, PublicCustomerConfig, 'pub')  # 公户管理
 site.register(models.Customer, PrivateCustomerConfig, 'pri')  # 私户管理
 site.register(models.ConsultRecord, ConsultRecordConfig)  # 所有客户跟进记录
 site.register(models.ConsultRecord, PriConsultRecordConfig, 'pri')  # 私户跟进记录
+
+# 员工管理

@@ -7,6 +7,10 @@ from django.shortcuts import HttpResponse
 from django.db import transaction  # 数据锁--事物
 from crm.models import Customer, UserInfo, ConsultRecord
 
+"""
+客户管理
+"""
+
 
 class PublicForm(StarkModelForm):
     # 对于公户的添加页面视图显示的内容
@@ -28,15 +32,16 @@ class CustomerConfig(StarkHandler):
     """
     所有客户，客户管理
     """
+
     def display_follow(self, obj=None, is_header=False):
         if is_header:
             return '跟进记录'
         url = reverse('stark:crm_consultrecord_list')
         return mark_safe('<a href="%s?cid=%s">跟进记录</a>' % (url, obj.pk))
 
-    list_display = ['id', 'name', 'qq',
+    list_display = ['id', 'name', 'tel', 'course',
                     get_choices_text('性别', 'gender'),
-                    get_choices_text('状态', 'status'), 'course',
+                    get_choices_text('状态', 'status'),
                     get_choices_text('来源', 'source'),
                     display_follow,
                     ]
@@ -114,6 +119,7 @@ class PrivateCustomerConfig(StarkHandler):
     """
     私户客户管理
     """
+
     def display_follow(self, obj=None, is_header=False):
         if is_header:
             return '跟进记录'
@@ -181,6 +187,13 @@ class ConsultRecordConfig(StarkHandler):
         return ConsultRecord.objects
 
 
+class PriModelForm(forms.ModelForm):
+    # 私户 添加功能 表单
+    class Meta:
+        model = ConsultRecord
+        exclude = ['customer', 'consultant']
+
+
 class PriConsultRecordConfig(StarkHandler):
     """
     私户跟进记录
@@ -189,10 +202,25 @@ class PriConsultRecordConfig(StarkHandler):
                     'id', 'customer', 'date', 'note']
     search_list = ['name__contains']
 
+    model_form_class = PriModelForm
+
     def get_queryset(self):
         # 筛选出当前客户的所有跟进记录
         cid = self.request.GET.get('cid')
         current_user_id = 3
         if cid:
             return ConsultRecord.objects.filter(customer_id=cid, customer__consultant_id=current_user_id)
-        return ConsultRecord.objects.filter(customer__consultant=current_user_id)
+        return ConsultRecord.objects.filter(customer__consultant_id=current_user_id)
+
+    def save(self, form, is_update=False):
+        """
+        在添加页面：私户客户跟进记录只需要填写跟进内容，不需要指定客户和销售
+        手动设置一个客户id和当前登陆用户id即可
+        """
+        if not is_update:
+            params = self.request.GET.get('_filter')
+            cid, num = params.split('=', maxsplit=1)
+            form.instance.customer = Customer.objects.get(id=num)  # 设置客户id
+            current_user_id = 3  # 当前用户登陆id
+            form.instance.consultant = UserInfo.objects.get(id=current_user_id)  # 设置当前跟进记录销售id
+        form.save()

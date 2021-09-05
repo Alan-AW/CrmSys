@@ -2,6 +2,7 @@ from django.db import models
 from app_rbac.models import UserInfo as RbacUserInfo
 
 
+# 部门
 class Department(models.Model):
     title = models.CharField(verbose_name='部门', max_length=32)
 
@@ -13,50 +14,12 @@ class Department(models.Model):
         verbose_name = '部门'
 
 
-class UserInfo(RbacUserInfo):
-    name = models.CharField(verbose_name='真实姓名', max_length=64)
-    gender_choices = (
-        (1, '男'),
-        (2, '女')
-    )
-    gender = models.IntegerField(verbose_name='性别', choices=gender_choices, default=1)
-    phone = models.CharField(verbose_name='电话', max_length=32)
-    depart = models.ForeignKey(to='Department', verbose_name='所属部门', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'user'
-        verbose_name = '员工'
-
-
-class Project(models.Model):
-    title = models.CharField(verbose_name='项目', max_length=64)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        db_table = 'project'
-        verbose_name = '项目'
-
-
-class City(models.Model):
-    name = models.CharField(verbose_name='地区', max_length=32)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 'city'
-        verbose_name = '地区'
-
-
+# 分公司
 class Company(models.Model):
     """
     分公司
     """
+    company_name = models.CharField(verbose_name='分公司名称', max_length=32)
     city = models.ForeignKey(to='City', verbose_name='地区', on_delete=models.CASCADE)
     project = models.ForeignKey(to='Project', verbose_name='项目', on_delete=models.CASCADE)
     semester = models.IntegerField(verbose_name='期数', default=1)
@@ -68,29 +31,112 @@ class Company(models.Model):
     # limit_choices_to={'depart_id': 1}
     # limit_choices_to={'depart__title': '管理层'}
     manger = models.ForeignKey(verbose_name='项目经理', to='UserInfo', related_name='manager',
-                               on_delete=models.CASCADE, limit_choices_to={'depart__title': '管理层'})
+                               on_delete=models.CASCADE, limit_choices_to={'depart__title': '项目部'})
     principal = models.ManyToManyField(verbose_name='负责人', to='UserInfo', related_name='principal',
-                                       limit_choices_to={'depart__title': '管理层'})
+                                       limit_choices_to={'depart__title': '项目部'})
 
     # manger = models.ForeignKey(verbose_name='项目经理', to='UserInfo', related_name='manager', on_delete=models.CASCADE)
     # principal = models.ManyToManyField(verbose_name='负责人', to='UserInfo', related_name='principal')
 
     memo = models.CharField(verbose_name='项目说明', max_length=256, blank=True, null=True)
 
-    def __str__(self):
-        return self.city
-
     class Meta:
         db_table = 'company'
         verbose_name = '分公司'
 
+    def __str__(self):
+        return self.company_name
 
+
+# 用户
+class UserInfo(RbacUserInfo):
+    name = models.CharField(verbose_name='真实姓名', max_length=64)
+    gender_choices = (
+        (1, '男'),
+        (2, '女')
+    )
+    gender = models.IntegerField(verbose_name='性别', choices=gender_choices, default=1)
+    phone = models.CharField(verbose_name='电话', max_length=32)
+    depart = models.ForeignKey(to='Department', verbose_name='所属部门', on_delete=models.CASCADE)
+
+    # company_name = models.ForeignKey(verbose_name='所属分公司', to='Company', on_delete=models.CASCADE)
+    # entry_date = models.DateField(verbose_name='入职日期', auto_now_add=True)
+    # resignation_date = models.DateField(verbose_name='离职日期', null=True, blank=True)
+    # salary = models.IntegerField(verbose_name='薪资', blank=True, null=True)
+
+    class Meta:
+        db_table = 'user'
+        verbose_name = '员工'
+
+    # def __str__(self):
+    #     return self.name
+
+
+# 项目
+class Project(models.Model):
+    title = models.CharField(verbose_name='项目', max_length=64)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'project'
+        verbose_name = '项目'
+
+
+# 城市\地区
+class City(models.Model):
+    name = models.CharField(verbose_name='地区', max_length=32)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'city'
+        verbose_name = '地区'
+
+
+# 员工工资发放状态
+class StaffRecord(models.Model):
+    name = models.ForeignKey(verbose_name='员工姓名', to='UserInfo', on_delete=models.CASCADE)
+    should = models.IntegerField(verbose_name='应发', default=10000)
+    later = models.IntegerField(verbose_name='迟到', default=0)
+    leave = models.IntegerField(verbose_name='早退', default=0)
+    ask_leave = models.IntegerField(verbose_name='请假', default=0)
+    fine = models.IntegerField(verbose_name='罚款', default=0)
+    actual = models.IntegerField(verbose_name='实发', default=10000)
+
+    class Meta:
+        db_table = 'staff_record'
+
+    def __str__(self):
+        return self.name
+
+
+# 分公司人事员工调动
+class ChangeCompany(models.Model):
+    name = models.ForeignKey(verbose_name='员工姓名', to='UserInfo', related_name='staff_name', on_delete=models.CASCADE)
+    origin_company = models.ForeignKey(verbose_name='原分公司', to='Company', related_name='original_company',
+                                       on_delete=models.CASCADE)
+    target_company = models.ForeignKey(verbose_name='目标分公司', to='Company', related_name='target_company',
+                                       on_delete=models.CASCADE)
+    memo = models.TextField(verbose_name='原因')
+    user = models.ForeignKey(to='UserInfo', verbose_name='处理人', related_name='make_name', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'change_cities'
+
+    def __str__(self):
+        return self.origin_company
+
+
+# 客户
 class Customer(models.Model):
     """
     客户表
     """
     name = models.CharField(verbose_name='姓名', max_length=32)
-    qq = models.CharField(verbose_name='联系方式', max_length=64, unique=True, help_text='QQ号/微信/手机号')
+    tel = models.CharField(verbose_name='联系方式', max_length=64, unique=True, help_text='QQ号/微信/手机号')
     status_choices = [
         (1, "已确认"),
         (2, "未确认")
@@ -173,12 +219,13 @@ class Customer(models.Model):
     last_consult_date = models.DateField(verbose_name="最后跟进日期", auto_now_add=True)
 
     def __str__(self):
-        return "姓名:{0},联系方式:{1}".format(self.name, self.qq, )
+        return "姓名:{0},联系方式:{1}".format(self.name, self.tel, )
 
     class Meta:
         db_table = 'customer'
 
 
+# 客户跟进记录
 class ConsultRecord(models.Model):
     """
     客户跟进记录
@@ -195,8 +242,35 @@ class ConsultRecord(models.Model):
         return self.customer
 
 
+# 支付记录
 class PaymentRecord(models.Model):
     """
     支付记录
     """
-    pass
+    customer = models.ForeignKey(Customer, verbose_name='客户', on_delete=models.CASCADE)
+    consultant = models.ForeignKey(to="UserInfo", verbose_name='销售顾问', help_text='最终签单人', on_delete=models.CASCADE)
+    city_list = models.ForeignKey(verbose_name='分公司', to='City', null=True, blank=True, on_delete=models.CASCADE)
+    pay_type_choices = [
+        (1, '项目启动款'),
+        (2, '项目进度款'),
+        (3, '项目尾款'),
+        (4, '项目违约金'),
+    ]
+    status_choices = [
+        (1, '未审核'),
+        (2, '已审核'),
+    ]
+    status = models.IntegerField(verbose_name='审核状态', choices=status_choices, default=1)
+    pay_type = models.IntegerField(verbose_name='费用类型', choices=pay_type_choices, default=1)
+    paid_fee = models.IntegerField(verbose_name='金额', default=0)
+    confirm_date = models.DateTimeField(verbose_name='确认日期', null=True, blank=True)
+    confirm_user = models.ForeignKey(verbose_name='确认人', to='UserInfo', related_name='confirms', null=True, blank=True,
+                                     on_delete=models.SET_NULL)
+    note = models.TextField(verbose_name='备注', blank=True, null=True)
+    apply_date = models.DateTimeField(verbose_name='申请日期', auto_now_add=True)
+
+    class Meta:
+        db_table = 'payment_record'
+
+    def __str__(self):
+        return self.customer
