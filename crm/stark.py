@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from app_stark.service.StarkModular import site, StarkHandler, get_choices_text, SearchOption
 from django.urls import path, re_path
 from crm.config.customer import *
+from crm.config.staff import *
 
 
 class DepartmentConfig(StarkHandler):
@@ -86,3 +87,4 @@ site.register(models.ConsultRecord, ConsultRecordConfig)  # 所有客户跟进�
 site.register(models.ConsultRecord, PriConsultRecordConfig, 'pri')  # 私户跟进记录
 
 # 员工管理
+site.register(models.StaffRecord, StaffRecordConfig)

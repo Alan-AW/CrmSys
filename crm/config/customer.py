@@ -33,13 +33,22 @@ class CustomerConfig(StarkHandler):
     所有客户，客户管理
     """
 
+    def display_project(self, obj, is_header=None):
+        # 对于咨询项目的 MTM 字段进行自定义展示
+        if is_header:
+            return '咨询的项目'
+        else:
+            projects_list = obj.course.all()
+            project_list = ['%s' % (row.title) for row in projects_list]
+        return '||'.join(project_list)
+
     def display_follow(self, obj=None, is_header=False):
         if is_header:
             return '跟进记录'
         url = reverse('stark:crm_consultrecord_list')
         return mark_safe('<a href="%s?cid=%s">跟进记录</a>' % (url, obj.pk))
 
-    list_display = ['id', 'name', 'tel', 'course',
+    list_display = ['id', 'name', 'tel', display_project,
                     get_choices_text('性别', 'gender'),
                     get_choices_text('状态', 'status'),
                     get_choices_text('来源', 'source'),

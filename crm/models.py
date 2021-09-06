@@ -59,17 +59,18 @@ class UserInfo(RbacUserInfo):
     phone = models.CharField(verbose_name='电话', max_length=32)
     depart = models.ForeignKey(to='Department', verbose_name='所属部门', on_delete=models.CASCADE)
 
-    # company_name = models.ForeignKey(verbose_name='所属分公司', to='Company', on_delete=models.CASCADE)
-    # entry_date = models.DateField(verbose_name='入职日期', auto_now_add=True)
-    # resignation_date = models.DateField(verbose_name='离职日期', null=True, blank=True)
-    # salary = models.IntegerField(verbose_name='薪资', blank=True, null=True)
+    company_name = models.ForeignKey(verbose_name='所属分公司', to='Company', null=True, blank=True,
+                                     on_delete=models.CASCADE)
+    entry_date = models.DateField(verbose_name='入职日期', auto_now_add=True)
+    resignation_date = models.DateField(verbose_name='离职日期', null=True, blank=True)
+    salary = models.IntegerField(verbose_name='薪资', blank=True, null=True)
 
     class Meta:
         db_table = 'user'
         verbose_name = '员工'
 
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
 
 
 # 项目
