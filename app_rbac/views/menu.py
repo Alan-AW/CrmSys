@@ -309,7 +309,7 @@ def multi_permissions(request):
                     row_obj = Permission.objects.filter(id=permission_id).first()
                     for k, v in row_dict.items():
                         setattr(row_obj, k, v)
-                    row_obj.validate_unique()
+                    row_obj.validate_unique()  # 唯一性检查
                     row_obj.save()
                 except Exception as e:
                     formset.errors[i].update(e)
