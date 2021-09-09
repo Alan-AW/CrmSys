@@ -497,9 +497,6 @@ class StarkSite(object):
         return (self.get_url(), self.app_name, self.namespace)
 
 
-site = StarkSite()
-
-
 def get_choices_text(title, field):
     """
     当数据库多字段为choices时使用；
@@ -671,3 +668,6 @@ class SearchOption(object):
         if self.is_choice:
             return field_obj[0]
         return field_obj.pk
+
+
+site = StarkSite()

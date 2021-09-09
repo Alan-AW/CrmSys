@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="Mr'Xu">
+	<meta name="Description" content="WebSite Desc">
+	<meta name="keywords" content="search keyword">
+	<meta name="website" content="http://www.xumeijie.com/">
+	<title id="site_title">用户登录</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+</head>
+<body>
+<h1>用户登录</h1>
+<form method="post">
+	{% csrf_token %}
+	<p><span style="color: red">{{ msg }}</span></p>
+	<span>用户名：</span><input class="input" type="text" name="user" placeholder="请输入用户名"><br/>
+	<span>密&nbsp;&nbsp;&nbsp;码：</span><input class="input" type="password" name="password" placeholder="请输入密码">
+	<input type="submit" class="submit" value="登录">
+</form>
+</body>
+
+<script src="{% static '' %}"></script>
+</html>

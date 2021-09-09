@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, HttpResponse, reverse
 from crm import models
 from django.utils.safestring import mark_safe
-from app_stark.service.StarkModular import site, StarkHandler, get_choices_text, SearchOption
+from app_stark.service.StarkModular import site, StarkHandler, get_choices_text, SearchOption, StarkModelForm
 from django.urls import path, re_path
 from crm.config.customer import *
 from crm.config.staff import *

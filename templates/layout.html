@@ -1,4 +1,5 @@
 {% load static %}
+{% load rbac %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +14,7 @@
 	<link rel="stylesheet" href="{% static 'stark/css/layout.css' %}">
 	<link rel="stylesheet" href="{% static 'stark/css/nav.css' %}">
 	<link rel="stylesheet" href="{% static 'stark/css/commons.css' %}">
-    <link rel="stylesheet" href="{% static 'stark/css/search_group.css' %}">
+	<link rel="stylesheet" href="{% static 'stark/css/search_group.css' %}">
 	{% block css %}{% endblock %}
 </head>
 <body>
@@ -29,6 +30,7 @@
 			<a class="menu-item">资产管理</a>
 			<a class="menu-item">用户信息</a>
 			<a class="menu-item">XXX管理</a>
+			<a href="{% url 'logout' %}" class="menu-item">注销</a>
 			<div class="menu-item">
 				<span>使用说明</span>
 				<i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -37,6 +39,7 @@
 					<a href="#" class="more-item">实在是编不了</a>
 				</div>
 			</div>
+
 		</div>
 
 		<div class="right-menu right clearfix">
@@ -67,17 +70,19 @@
 </div>
 <div class="pg-body">
 	<div class="left-menu">
+		<!-- 一级菜单使用 menuList 二级菜单使用 multiMenu -->
+		<!-- 不管使用哪个菜单都需要传参数  request -->
 		<div class="menu-body">
-
+{#			{% multiMenu request %}#}
 		</div>
 	</div>
 	<div class="right-body">
-		<div>
-
-		</div>
+		<!-- 路径导航，如果不需要路径导航，删掉这个即可 -->
+{#		{% breadcrumb request %}#}
 		{% block content %} {% endblock %}
 	</div>
 </div>
 {% block js %} {% endblock %}
 </body>
+<script src="{% static 'rbac/js/rbac.js' %}"></script>
 </html>

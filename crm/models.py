@@ -97,7 +97,7 @@ class City(models.Model):
         verbose_name = '地区'
 
 
-# 员工工资发放状态
+# 员工考勤管理
 class StaffRecord(models.Model):
     name = models.ForeignKey(verbose_name='员工姓名', to='UserInfo', on_delete=models.CASCADE)
     should = models.IntegerField(verbose_name='应发', default=10000)

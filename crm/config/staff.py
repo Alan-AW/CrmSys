@@ -11,9 +11,13 @@ from django.db import transaction  # 数据锁--事物
 from crm.models import Customer, UserInfo, ConsultRecord
 
 
+# 员工考勤管理
 class StaffRecordConfig(StarkHandler):
-    list_display = ['id', 'name', 'should', 'later', 'leave',
+    list_display = [StarkHandler.display_checkbox, 'id', 'name', 'should', 'later', 'leave',
                     'ask_leave', 'fine', 'actual'
                     ]
-
     order_list = ['id']
+    search_list = ['name__name__contains']
+    # search_group = [
+    #     SearchOption('name', show_func=lambda field_obj: field_obj[1] + '同事'),
+    # ]

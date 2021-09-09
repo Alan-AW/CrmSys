@@ -38,9 +38,10 @@ class CustomerConfig(StarkHandler):
         if is_header:
             return '咨询的项目'
         else:
+            # 进行跨表查询显示出客户咨询的所有项目（跨表查询MTM字段）
             projects_list = obj.course.all()
             project_list = ['%s' % (row.title) for row in projects_list]
-        return '||'.join(project_list)
+        return mark_safe('<span style="color: red;">||</span>'.join(project_list))
 
     def display_follow(self, obj=None, is_header=False):
         if is_header:

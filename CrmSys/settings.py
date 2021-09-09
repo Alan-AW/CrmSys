@@ -107,17 +107,30 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# rbac 组件配置
 
-# 业务中的用户表位置
-USER_MODEL_CLASS = 'crm.models.UserInfo'
-
-# 自动发现项目中的URL白名单设置
-AUTO_DISCOVER_EXCLUDE = [
-    '/admin/.*',
-    '/logout/',
-    '/login/',
-]
 
 # CRM业务相关配置
 MAX_PRIVATE_CUSTOMER = 100  # 一个销售最多可对接的客户数量
+
+#  ############################### 权限相关的配置 ##############################################
+USER_MODEL_CLASS = 'crm.models.UserInfo'
+PERMISSION_SESSION_KEY = 'permissionListKey'
+MENU_SESSION_KEY = 'menuListKey'
+
+# 需要登陆但无需权限校验的URL
+NO_PERMISSION_LIST = [
+    '/index/',
+    '/logout/',
+]
+
+# 权限校验白名单设置
+VALID_URL = [
+    '/login/',
+    '/logout/',
+]
+
+# 自动发现项目中的URL白名单设置
+AUTO_DISCOVER_EXCLUDE = [
+    '/logout/',
+    '/login/',
+]
