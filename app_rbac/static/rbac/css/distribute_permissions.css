@@ -1,0 +1,97 @@
+.active {
+    border-left: 3px solid deeppink;
+
+}
+
+.active a {
+    color: #985f0d;
+}
+
+table {
+    font-size: 12px;
+}
+
+.user-area ul {
+    padding-left: 20px;
+}
+
+.user-area li {
+    cursor: pointer;
+    padding: 2px 0;
+}
+
+.user-area li a {
+    display: block;
+}
+
+.user-area li.active {
+    font-weight: bold;
+    color: red;
+}
+
+.user-area li.active a {
+    color: red;
+}
+
+.role-area tr td a {
+    display: block;
+}
+
+.role-area tr.active {
+    background-color: #f1f7fd;
+    border-left: 3px solid #fdc00f;
+}
+
+.panel-body {
+    font-size: 12px;
+}
+
+.permission-area tr.root {
+    background-color: #f1f7fd;
+}
+
+.permission-area tr.root td i {
+    margin: 3px;
+}
+
+.permission-area .node {
+
+}
+
+.permission-area .node input[type='checkbox'] {
+    margin: 0 5px;
+}
+
+.permission-area .node .parent {
+    padding: 5px 0;
+}
+
+.permission-area .node label {
+    font-weight: normal;
+    margin-bottom: 0;
+    font-size: 12px;
+}
+
+.permission-area .node .children {
+    padding: 0 0 0 20px;
+}
+
+.permission-area .node .children .child {
+    display: inline-block;
+    margin: 2px 5px;
+}
+
+.select-help {
+    float: right;
+}
+
+.select-help label {
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.select-help .check-all {
+    float: left;
+    display: inline-block;
+    margin-right: 8px;
+}

@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from django.conf import settings
+from django.conf import settings as sys
 from django.utils.module_loading import import_string  # 内置工具，根据字符串进行导入模块
 from django.urls import URLResolver, URLPattern
 import re
@@ -16,7 +16,7 @@ class AutoFindUrl:
         :param url:
         :return:
         """
-        for regex in settings.AUTO_DISCOVER_EXCLUDE:
+        for regex in sys.AUTO_DISCOVER_EXCLUDE:
             if re.match(regex, url):
                 return True
 
@@ -51,6 +51,6 @@ class AutoFindUrl:
         :return: 所有url的有序字典
         """
         url_ordered_dict = OrderedDict()  # {'rbac:menu_list': {name:'rbac:menu_list', url: 'xxx/xxx/menu_list'}}
-        md = import_string(settings.ROOT_URLCONF)  # 根据字符串的形式去导入一个模块，在settings中 ROOT_URLCONF 指向的就是项目根路由的文件地址
+        md = import_string(sys.ROOT_URLCONF)  # 根据字符串的形式去导入一个模块，在settings中 ROOT_URLCONF 指向的就是项目根路由的文件地址
         self.recursion_urls(None, '/', md.urlpatterns, url_ordered_dict)
         return url_ordered_dict

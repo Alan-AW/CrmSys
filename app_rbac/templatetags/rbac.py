@@ -1,5 +1,5 @@
 from django.template import Library
-from django.conf import settings as SYS
+from CrmSys import settings as sys
 from django.urls import reverse
 from django.http import QueryDict
 import re
@@ -22,7 +22,7 @@ register = Library()  # 注册该组件
 # 二级菜单
 @register.inclusion_tag('rbac/multiMenu.html')
 def multiMenu(request):
-    menuDict = request.session[SYS.MENU_SESSION_KEY]
+    menuDict = request.session[sys.MENU_SESSION_KEY]
     keyLIst = sorted(menuDict)  # 对字典的key进行排序
     orderedDict = OrderedDict()  # 创建了一个空的有序字典
     for key in keyLIst:
@@ -46,7 +46,7 @@ def breadcrumb(request):
 # 权限粒度控制到按钮
 @register.filter
 def hasPermission(request, name):
-    if name in request.session[SYS.PERMISSION_SESSION_KEY]:
+    if name in request.session[sys.PERMISSION_SESSION_KEY]:
         return True
 
 
@@ -74,18 +74,3 @@ def memoryUrl(request, name, *args, **kwargs):
     :return:
     """
     return urls.memoryUrl(request, name, *args, **kwargs)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

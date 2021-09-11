@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.urls import path, re_path, include
-from crm.views import Index, AddCity
 from app_stark.service.StarkModular import site
-from crm.views import Login, Logout
+from crm.views import Login, Logout, NoPermissionHtml
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -11,9 +10,9 @@ urlpatterns = [
     # path('add/city/', AddCity.as_view(), name='add_city'),
 
     # 用户登陆&退出
-    path('', Login.as_view(), name='login'),
+    path('login/', Login.as_view(), name='login'),
     path('logout/', Logout.as_view(), name='logout'),
-
+    path('no_permission_html/', NoPermissionHtml.as_view()),
     # stark 组件应用
     path('stark/', site.urls),
     # rbac 组件应用

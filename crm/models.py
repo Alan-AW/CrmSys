@@ -35,9 +35,6 @@ class Company(models.Model):
     principal = models.ManyToManyField(verbose_name='负责人', to='UserInfo', related_name='principal',
                                        limit_choices_to={'depart__title': '项目部'})
 
-    # manger = models.ForeignKey(verbose_name='项目经理', to='UserInfo', related_name='manager', on_delete=models.CASCADE)
-    # principal = models.ManyToManyField(verbose_name='负责人', to='UserInfo', related_name='principal')
-
     memo = models.CharField(verbose_name='项目说明', max_length=256, blank=True, null=True)
 
     class Meta:

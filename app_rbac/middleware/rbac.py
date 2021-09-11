@@ -1,6 +1,6 @@
 from django.utils.deprecation import MiddlewareMixin
-from django.shortcuts import render, redirect, HttpResponse
-from django.conf import settings as SYS
+from django.shortcuts import render, redirect, HttpResponse, reverse
+from django.conf import settings as sys
 import re
 
 
@@ -20,19 +20,19 @@ class RbacMiddleware(MiddlewareMixin):
 
         # ******进行白名单设置
         current_url = request.path_info
-        for valid in SYS.VALID_URL:
+        for valid in sys.VALID_URL:
             if re.match(valid, current_url):
                 # 直接通过白名单校验，否则才走下面的权限验证
                 return None  # 中间件不拦截，直接去视图函数，有返回值便会被拦截
-        permissionDict = request.session.get(SYS.PERMISSION_SESSION_KEY)
+        permissionDict = request.session.get(sys.PERMISSION_SESSION_KEY)
         if not permissionDict:
-            return HttpResponse('请先登录！！')
-        urlRecord = [{'title': '首页', 'url': '/login/'}]
+            return redirect('/login/')
+        urlRecord = [{'title': '首页', 'url': '#'}]
         # 此处代码对需要登陆但是无需权限校验的url进行直接访问
-        for url in SYS.NO_PERMISSION_LIST:
+        for url in sys.NO_PERMISSION_LIST:
             if re.match(url, request.path_info):
-                request.currentSelectedPermission = 0
-                request.breadcrumb = urlRecord
+                # request.currentSelectedPermission = 0
+                # request.breadcrumb = urlRecord
                 return None
 
         flag = False
@@ -54,7 +54,7 @@ class RbacMiddleware(MiddlewareMixin):
                 request.breadcrumb = urlRecord
                 break
         if not flag:
-            return HttpResponse('无权访问!!')
+            return redirect('/no_permission_html/')
 
 
 '''

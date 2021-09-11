@@ -1,7 +1,8 @@
 from django.views import View
 from django.urls import reverse
 from django.shortcuts import render, redirect, HttpResponse
-from crm.models import UserInfo
+from django.utils.module_loading import import_string
+from django.conf import settings as sys
 from app_rbac.forms.user import UserModelForm, UpdateUserModelForm
 
 """
@@ -11,7 +12,8 @@ from app_rbac.forms.user import UserModelForm, UpdateUserModelForm
 
 class UserList(View):
     def get(self, request):
-        userQuerySet = UserInfo.objects.all()
+        obj = import_string(sys.USER_MODEL_CLASS)
+        userQuerySet = obj.objects.all()
         return render(request, 'rbac/user_list.html', locals())
 
 
@@ -31,7 +33,8 @@ class UserAdd(View):
 
 class UserEdit(View):
     def get(self, request, pk):
-        userObj = UserInfo.objects.filter(id=pk).first()
+        obj = import_string(sys.USER_MODEL_CLASS)
+        userObj = obj.objects.filter(id=pk).first()
         if not userObj:
             return HttpResponse('该用户不存在!')
         form = UpdateUserModelForm(instance=userObj)
@@ -54,6 +57,7 @@ class UserDel(View):
         return render(request, 'rbac/delete.html', {'cancelUrl': self.cancelUrl})
 
     def post(self, request, pk):
-        UserInfo.objects.filter(id=pk).delete()
+        obj = import_string(sys.USER_MODEL_CLASS)
+        obj.objects.filter(id=pk).delete()
         return redirect(self.cancelUrl)
 

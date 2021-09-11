@@ -1,22 +1,12 @@
 {% extends 'layout.html' %}
+{% load static %}
 {% load rbac %}
 
 {% block css %}
-    <style>
-        /* 选中样式 */
-        .active {
-            border-left: 3px solid deeppink;
-
-        }
-
-        .active a {
-            color: #985f0d;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'rbac/css/distribute_permissions.css' %}">
 {% endblock %}
 
 {% block content %}
-
     <div class="luffy-container">
         <!-- 用户面板 -->
         <div class="col-md-3">
@@ -97,8 +87,8 @@
                         <i class="fa fa-gavel" aria-hidden="true"></i>权限分配
                         {% if r_id %}
                             <button
-                               class="right btn btn-success btn-xs"
-                               style="padding: 2px 8px;margin: -3px;">
+                                    class="right btn btn-success btn-xs"
+                                    style="padding: 2px 8px;margin: -3px;">
                                 <i class="fa fa-save" aria-hidden="true"></i>
                                 保存
                             </button>
@@ -161,7 +151,7 @@
 
 {% block js %}
     <script>
-    /* 全选按钮的交互 */
+        /* 全选按钮的交互 */
         $(function () {
             $('.check-all input:checkbox').change(function () {
                 $(this).parents('.root').next().find(':checkbox').prop('checked', $(this).prop('checked'));

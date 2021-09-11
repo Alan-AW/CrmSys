@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect, HttpResponse, reverse
+from django.shortcuts import render, redirect
 from crm import models
-from django.utils.safestring import mark_safe
-from app_stark.service.StarkModular import site, StarkHandler, get_choices_text, SearchOption, StarkModelForm
-from django.urls import path, re_path
+from app_stark.config.btn_config import BaseBtn
+from app_stark.service.StarkModular import site
+from django.urls import re_path
 from crm.config.customer import *
 from crm.config.staff import *
 
@@ -12,13 +12,17 @@ class DepartmentConfig(StarkHandler):
     order_list = ['id', 'title']
 
 
-class UserConfig(StarkHandler):
+class UserConfig(BaseBtn, StarkHandler):
     def display_detail(self, obj, is_header=None):
         # 详情页面超链接显示信息以及url反向生成
         if is_header:
             return '详细信息'
         url = reverse('stark:crm_userinfo_detail', kwargs={'user_pk': obj.pk})
         return mark_safe('<a href="%s">%s</a>' % (url, obj.name))
+
+    list_display = ['id', display_detail, get_choices_text('性别', 'gender'),
+                    'phone', 'email', 'depart']
+    order_list = ['id', 'name']
 
     def extra_urls(self):
         # 增加一条用户详情页面
@@ -47,23 +51,19 @@ class UserConfig(StarkHandler):
         else:
             return render(request, 'stark/detail.html', {'defeat': True})
 
-    list_display = ['id', display_detail, get_choices_text('性别', 'gender'),
-                    'phone', 'email', 'depart']
-    order_list = ['id', 'name']
 
-
-class ProjectConfig(StarkHandler):
+class ProjectConfig(BaseBtn, StarkHandler):
     list_display = ['id', 'title', ]
     order_list = ['id']
 
 
-class CityConfig(StarkHandler):
+class CityConfig(BaseBtn, StarkHandler):
     list_display = ['id', 'name', ]
     order_list = ['id']
 
 
 # 分公司
-class CompanyConfig(StarkHandler):
+class CompanyConfig(BaseBtn, StarkHandler):
     list_display = ['id', 'city',
                     'project', 'semester',
                     'price', 'start_date',

@@ -1,5 +1,6 @@
 from django import forms
-from crm.models import UserInfo
+from django.utils.module_loading import import_string  # 内置工具，根据字符串进行导入模块
+from django.conf import settings as sys
 from django.core.exceptions import ValidationError
 
 
@@ -7,7 +8,7 @@ class UserModelForm(forms.ModelForm):
     confirm_password = forms.CharField(label='确认密码')
 
     class Meta:
-        model = UserInfo
+        model = import_string(sys.USER_MODEL_CLASS)
         fields = ['name', 'email', 'roles',
                   'username', 'password', 'confirm_password',
                   'gender', 'phone', 'depart'
@@ -37,7 +38,7 @@ class UserModelForm(forms.ModelForm):
 
 class UpdateUserModelForm(forms.ModelForm):
     class Meta:
-        model = UserInfo
+        model = import_string(sys.USER_MODEL_CLASS)
         fields = ['name', 'email']
 
     def __init__(self, *args, **kwargs):

@@ -71,7 +71,7 @@ class PublicCustomerConfig(StarkHandler):
     公户客户管理
     """
     list_display = [StarkHandler.display_checkbox,
-                    'id', 'name', 'qq', get_choices_text('性别', 'gender'),
+                    'id', 'name', 'tel', get_choices_text('性别', 'gender'),
                     get_choices_text('状态', 'status'), 'course',
                     get_choices_text('来源', 'source'),
                     ]
@@ -136,7 +136,7 @@ class PrivateCustomerConfig(StarkHandler):
         url = reverse('stark:crm_consultrecord_pri_list')
         return mark_safe('<a href="%s?cid=%s">跟进记录</a>' % (url, obj.pk))
 
-    list_display = [StarkHandler.display_checkbox, 'id', 'name', 'qq', get_choices_text('性别', 'gender'),
+    list_display = [StarkHandler.display_checkbox, 'id', 'name', 'tel', get_choices_text('性别', 'gender'),
                     get_choices_text('状态', 'status'), 'course',
                     get_choices_text('来源', 'source'),
                     display_follow,

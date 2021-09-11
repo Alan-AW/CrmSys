@@ -35,6 +35,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'app_rbac.middleware.rbac.RbacMiddleware'
 ]
 
 ROOT_URLCONF = 'CrmSys.urls'
@@ -107,8 +108,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-
 # CRM业务相关配置
 MAX_PRIVATE_CUSTOMER = 100  # 一个销售最多可对接的客户数量
 
@@ -117,20 +116,67 @@ USER_MODEL_CLASS = 'crm.models.UserInfo'
 PERMISSION_SESSION_KEY = 'permissionListKey'
 MENU_SESSION_KEY = 'menuListKey'
 
+# 权限校验白名单设置,无需权限就能直接访问的URL
+VALID_URL = [
+    '/login/',
+    '/logout/',
+    '/no_permission_html/',
+]
+
 # 需要登陆但无需权限校验的URL
 NO_PERMISSION_LIST = [
     '/index/',
     '/logout/',
 ]
 
-# 权限校验白名单设置
-VALID_URL = [
+# 自动发现项目中的URL白名单设置，不需要发现这些URL地址进行保存到数据库中
+AUTO_DISCOVER_EXCLUDE = [
     '/login/',
     '/logout/',
+    '/index/',
+    '/no_permission_html/',
 ]
 
-# 自动发现项目中的URL白名单设置
-AUTO_DISCOVER_EXCLUDE = [
-    '/logout/',
-    '/login/',
+# ################## 默认文件上传配置 ########################
+from django.core.files.uploadhandler import MemoryFileUploadHandler
+from django.core.files.uploadhandler import TemporaryFileUploadHandler
+
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
 ]
+
+# Maximum size, in bytes, of a request before it will be streamed to the
+# file system instead of into memory.
+# 允许内存中上传文件的大小
+#   合法：InMemoryUploadedFile对象（写在内存）         -> 上传文件小于等于 FILE_UPLOAD_MAX_MEMORY_SIZE
+# 不合法：TemporaryUploadedFile对象（写在临时文件）     -> 上传文件大于    FILE_UPLOAD_MAX_MEMORY_SIZE 且 小于 DATA_UPLOAD_MAX_MEMORY_SIZE
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 2621440  # i.e. 2.5 MB
+
+# Maximum size in bytes of request data (excluding file uploads) that will be
+# read before a SuspiciousOperation (RequestDataTooBig) is raised.
+# 允许上传内容的大小（包含文件和其他请求内容）
+DATA_UPLOAD_MAX_MEMORY_SIZE = 2621440  # i.e. 2.5 MB
+
+# Maximum number of GET/POST parameters that will be read before a
+# SuspiciousOperation (TooManyFieldsSent) is raised.
+# 允许的上传文件数
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
+
+# Directory in which upload streamed files will be temporarily saved. A value of
+# `None` will make Django use the operating system's default temporary directory
+# (i.e. "/tmp" on *nix systems).
+# 临时文件夹路径
+FILE_UPLOAD_TEMP_DIR = None
+
+# The numeric mode to set newly-uploaded files to. The value should be a mode
+# you'd pass directly to os.chmod; see https://docs.python.org/3/library/os.html#files-and-directories.
+# 文件权限
+FILE_UPLOAD_PERMISSIONS = None
+
+# The numeric mode to assign to newly-created directories, when uploading files.
+# The value should be a mode as you'd pass to os.chmod;
+# see https://docs.python.org/3/library/os.html#files-and-directories.
+# 文件夹权限
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = None

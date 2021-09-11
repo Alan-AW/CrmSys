@@ -1,13 +1,13 @@
-from django.conf import settings as SYS
+from CrmSys import settings as sys
 
 
 def initPermission(userObj, request):
-    '''
+    """
     用户权限初始化
     :param userObj:  当前用户对象
     :param request:   请求相关的所有数据
     :return:
-    '''
+    """
     # 根据当前用户信息获取到所有的权限，然后放入到session中
 
     permissionQueryset = userObj.roles.filter(permission__isnull=False) \
@@ -50,8 +50,8 @@ def initPermission(userObj, request):
                 'children': [node, ]
             }
 
-    request.session[SYS.PERMISSION_SESSION_KEY] = permissionDict
-    request.session[SYS.MENU_SESSION_KEY] = menuDict
+    request.session[sys.PERMISSION_SESSION_KEY] = permissionDict
+    request.session[sys.MENU_SESSION_KEY] = menuDict
 
 
 '''
