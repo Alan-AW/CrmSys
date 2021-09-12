@@ -31,8 +31,8 @@ class RbacMiddleware(MiddlewareMixin):
         # 此处代码对需要登陆但是无需权限校验的url进行直接访问
         for url in sys.NO_PERMISSION_LIST:
             if re.match(url, request.path_info):
-                # request.currentSelectedPermission = 0
-                # request.breadcrumb = urlRecord
+                request.currentSelectedPermission = 0
+                request.breadcrumb = urlRecord
                 return None
 
         flag = False
