@@ -1,5 +1,5 @@
 from django.template import Library
-from CrmSys import settings as sys
+from django.conf import settings as sys
 from django.urls import reverse
 from django.http import QueryDict
 import re
@@ -25,13 +25,13 @@ def multiMenu(request):
     menuDict = request.session[sys.MENU_SESSION_KEY]
     keyLIst = sorted(menuDict)  # 对字典的key进行排序
     orderedDict = OrderedDict()  # 创建了一个空的有序字典
-    for key in keyLIst:
-        val = menuDict[key]
-        val['class'] = 'hide'  # 默认加了一个hide属性使其隐藏
-        for per in val['children']:
-            if per['id'] == request.currentSelectedPermission:
-                per['class'] = 'active'
-                val['class'] = ''
+    for key in keyLIst:  # 对排序之后的新字典进行循环
+        val = menuDict[key]  # 根据有序字典的key去原始无序字典进行取值（取到的都是一级菜单）
+        val['class'] = 'hide'  # 给所有的一级菜单默认加了一个hide class属性使其隐藏
+        for per in val['children']:  # 再次循环一级菜单中的二级菜单(权限)
+            if per['id'] == request.currentSelectedPermission:  # 判断是否是当前访问的权限
+                per['class'] = 'active'  # 给自己(二级菜单)加上active class属性
+                val['class'] = ''  # 给一级菜单的class hide 属性去掉 让一级菜单保持展开状态
         orderedDict[key] = val
 
     return {'menuDict': orderedDict}
