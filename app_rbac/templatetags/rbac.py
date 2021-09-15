@@ -29,7 +29,10 @@ def multiMenu(request):
         val = menuDict[key]  # 根据有序字典的key去原始无序字典进行取值（取到的都是一级菜单）
         val['class'] = 'hide'  # 给所有的一级菜单默认加了一个hide class属性使其隐藏
         for per in val['children']:  # 再次循环一级菜单中的二级菜单(权限)
-            if per['id'] == request.currentSelectedPermission:  # 判断是否是当前访问的权限
+            # 中间件中存储了当前访问权限的pid或者id
+            # per['id'] 二级菜单的id
+            # 让这两个id进行匹配，如果匹配成功(二级菜单的id与当前访问权限的 pid或id 相等)
+            if per['id'] == request.currentSelectedPermission:
                 per['class'] = 'active'  # 给自己(二级菜单)加上active class属性
                 val['class'] = ''  # 给一级菜单的class hide 属性去掉 让一级菜单保持展开状态
         orderedDict[key] = val

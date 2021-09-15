@@ -23,7 +23,7 @@ def initPermission(userObj, request):
                 'permission__menu_id',
                 'permission__menu__title',
                 'permission__menu__icon'
-                ).distinct()  # 获取到所有权限(url)
+                ).distinct()  # 获取到所有权限(url) 并去重
     # 获取到所有的权限 + 菜单信息 并且写入session
     permissionDict = {}
     menuDict = {}
