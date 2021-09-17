@@ -27,7 +27,7 @@ def multiMenu(request):
 
 **0. 二级菜单以及默认选中设计思路**
 
-**<u>用户登陆 -- 权限初始化 --  通过用户当前的角色跨表获取所有权限及菜单信息 -- 存入session</u>**
+**<u>用户登陆 -- 权限初始化 --  通过用户当前的角色跨表获取所有权限及菜单信息（一级菜单与二级菜单） -- 存入session</u>**
 
 ```python
 permissionQueryset = userObj.roles.filter(permission__isnull=False) \
@@ -146,6 +146,7 @@ class Menu(models.Model):
     
 # 权限表中新增两个字段，将权限归属到菜单中
 class Permission(models.Model):
+    ...
     menu = models.ForeignKey(verbose_name='所属菜单', to='Menu', null=True, blank=True,
                              help_text='null表示不是菜单,这个字段有值才表示二级菜单',
                              on_delete=models.DO_NOTHING)

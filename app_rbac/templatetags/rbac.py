@@ -22,7 +22,7 @@ register = Library()  # 注册该组件
 # 二级菜单
 @register.inclusion_tag('rbac/multiMenu.html')
 def multiMenu(request):
-    menuDict = request.session[sys.MENU_SESSION_KEY]
+    menuDict = request.session[sys.MENU_SESSION_KEY]  # 一级菜单与二级菜单
     keyLIst = sorted(menuDict)  # 对字典的key进行排序
     orderedDict = OrderedDict()  # 创建了一个空的有序字典
     for key in keyLIst:  # 对排序之后的新字典进行循环
