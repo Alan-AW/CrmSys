@@ -61,3 +61,23 @@ class UserDel(View):
         obj.objects.filter(id=pk).delete()
         return redirect(self.cancelUrl)
 
+
+class ResetPassword(View):
+    def get(self, request, pk):
+        obj = import_string(sys.USER_MODEL_CLASS)
+        userObj = obj.objects.filter(id=pk).first()
+        if not userObj:
+            user_not_found = '无当前用户！请重新选择！'
+            return render(request, 'rbac/resetpwd.html', locals())
+        return render(request, 'rbac/resetpwd.html')
+
+    def post(self, request, pk):
+        obj = import_string(sys.USER_MODEL_CLASS)
+        userObj = obj.objects.filter(id=pk)
+        pwd = request.POST.get('password')
+        resetpwd = request.POST.get('resetpassword')
+        if not userObj or pwd != resetpwd:
+            errors = '当前用户不存！或两次输入的密码不一致！'
+            return render(request, 'rbac/resetpwd.html', locals())
+        userObj.update(password=resetpwd)
+        return redirect(reverse('rbac:user_list'))

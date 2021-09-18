@@ -15,6 +15,7 @@
                 <th>序号</th>
                 <th>用户名</th>
                 <th>邮箱</th>
+                <th>重置密码</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -24,6 +25,7 @@
                     <td>{{ forloop.counter }}</td>  {# 循环计数器 #}
                     <td>{{ row.name }}</td>
                     <td>{{ row.email }}</td>
+                    <td><a href="{% url 'rbac:user_reset' pk=row.pk %}">重置</a></td>
                     <td>
                         <a style="color: #333333;" href="{% url 'rbac:user_edit' pk=row.id %}">
                             <i class="fa fa-edit" aria-hidden="true"></i></a>

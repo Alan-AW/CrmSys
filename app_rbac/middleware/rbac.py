@@ -27,7 +27,7 @@ class RbacMiddleware(MiddlewareMixin):
         permissionDict = request.session.get(sys.PERMISSION_SESSION_KEY)
         if not permissionDict:
             return redirect('/login/')
-        urlRecord = [{'title': '首页', 'url': '#'}]
+        urlRecord = [{'title': '返回上页', 'url': 'javascript:history.go(-1)'}]
         # 此处代码对需要登陆但是无需权限校验的url进行直接访问
         for url in sys.NO_PERMISSION_LIST:
             if re.match(url, request.path_info):
