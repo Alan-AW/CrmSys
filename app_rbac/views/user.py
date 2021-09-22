@@ -76,6 +76,9 @@ class ResetPassword(View):
         userObj = obj.objects.filter(id=pk)
         pwd = request.POST.get('password')
         resetpwd = request.POST.get('resetpassword')
+        if not pwd or not resetpwd:
+            errors = '不能为空！'
+            return render(request, 'rbac/resetpwd.html', locals())
         if not userObj or pwd != resetpwd:
             errors = '当前用户不存！或两次输入的密码不一致！'
             return render(request, 'rbac/resetpwd.html', locals())

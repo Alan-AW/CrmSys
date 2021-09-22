@@ -21,13 +21,19 @@ class Login(View):
             return render(request, 'login.html', {'msg': '用户名或密码错误'})
         request.session['user_info'] = {'id': userObj.pk, 'name': userObj.name}
         initPermission(userObj, request)
-        return redirect(reverse('stark:crm_customer_list'))
+        return redirect(reverse('welcome'))
 
 
 class Logout(View):
     def get(self, request):
         request.session.delete()
         return redirect(reverse('login'))
+
+
+class Welcome(View):
+    def get(self, request):
+        user_name = request.session.get('user_info')['name']
+        return render(request, 'welcome.html', locals())
 
 
 class NoPermissionHtml(View):

@@ -455,7 +455,6 @@ def distribute_permissions(request):
         all_menu_dict[menu_id]['children'].append(row)
     # 3. 获取所有的三级菜单（不能做菜单的权限
     all_permission_list = Permission.objects.filter(menu__isnull=True).values('id', 'title', 'pid_id')  # 归属到二级菜单
-    print(all_second_menu_dict)
     for row in all_permission_list:
         if row['pid_id']:  # 数据合法，才做处理
             all_second_menu_dict[row['pid_id']]['children'].append(row)

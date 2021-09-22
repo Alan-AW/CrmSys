@@ -127,6 +127,7 @@ VALID_URL = [
 NO_PERMISSION_LIST = [
     '/index/',
     '/logout/',
+    '/welcome/',
 ]
 
 # 自动发现项目中的URL白名单设置，不需要发现这些URL地址进行保存到数据库中
@@ -134,6 +135,7 @@ AUTO_DISCOVER_EXCLUDE = [
     '/login/',
     '/logout/',
     '/index/',
+    '/welcome/',
     '/no_permission_html/',
 ]
 
