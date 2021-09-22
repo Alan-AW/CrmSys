@@ -50,7 +50,7 @@
                                 </a>
                                 <a href="{% memoryUrl request 'rbac:menu_del' pk=row.id %}"
                                    style="text-decoration: none;font-size: 16px;">
-                                    <i class=" fa fa-trash-o"></i>
+                                    <i class="fas fa-trash-alt"></i>
                                 </a>
                             </td>
                         </tr>
@@ -101,7 +101,7 @@
                                 </a>
                                 <a href="{% memoryUrl request 'rbac:second_menu_del' pk=row.id %}"
                                    style="text-decoration: none;font-size: 16px;">
-                                    <i class=" fa fa-trash-o"></i>
+                                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                 </a>
                             </td>
                         </tr>
@@ -129,11 +129,11 @@
                         </a>
                     {% endif %}
                     <a href="{% memoryUrl request 'rbac:multi_permissions' %}"
-                           class="right btn btn-success btn-xs"
-                           style="padding: 2px 8px;margin: -3px;margin-right: 10px">
-                            <i class="fa fa-mail-forward" aria-hidden="true"></i>
-                            批量操作
-                        </a>
+                       class="right btn btn-success btn-xs"
+                       style="padding: 2px 8px;margin: -3px;margin-right: 10px">
+                        <i class="fa fa-mail-forward" aria-hidden="true"></i>
+                        批量操作
+                    </a>
                 </div>
 
                 <!-- Table -->
@@ -158,7 +158,7 @@
                                 </a>
                                 <a href="{% memoryUrl request 'rbac:permission_del' pk=row.id %}"
                                    style="text-decoration: none;font-size: 16px;">
-                                    <i class=" fa fa-trash-o"></i>
+                                    <i class="fas fa-trash-alt" aria-hidden="true"></i>
                                 </a>
                             </td>
                         </tr>

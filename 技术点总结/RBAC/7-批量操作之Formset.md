@@ -1,0 +1,91 @@
+## **RBAC:Role based user access control**
+
+## 基于角色的用户权限控制
+
+**rbac实现流程：1.用户登陆 --> 2.(3)权限初始化(读取当前用户拥有的所有权限，放入session中) --> 3(2).中间件读取权限信息做权限校验**
+
+**<u>用户所有请求都会先穿过中间件，在中间件中会读取当前用户请求url，如果是白名单的话会直接放行，进入用户登陆校验，然后做权限初始化，将当前用户所拥有的所有权限与菜单信息全部获取写入session。</u>**
+
+*<u>用户再次发出请求，穿过中间件的时候仍然会做权限校验，是否登陆、是否有权限访问......</u>**
+
+### 一、表结构设计
+
+​    Permission <-------MTM-------> Role <-------MTM-------> User
+​    *权限表中name字段表示的是每个权限(URL)的别名，必须要加上 条件：
+
+```python
+unique=True
+```
+
+ 	表示该字段是不可重复的
+
+​    *为适应后续程序的可扩展性，UserInfo表中,不创建该表，让业务中的用户表继承该用户表
+
+```python
+class Meta:
+	abstract = True
+```
+
+​    *对于MTM字段或者Fk字段 关联上的表可以写成带引号的类名也可以直接写类名，
+​        区别：写上引号表示在内部做上关联；不写引号表示直接将关联的表内存地址引用过来
+
+### 二、中间件原理
+
+![image-20210912204416065](C:\Users\w84u\AppData\Roaming\Typora\typora-user-images\image-20210912204416065.png)
+
+![image-20210912204654191](C:\Users\w84u\AppData\Roaming\Typora\typora-user-images\image-20210912204654191.png)
+
+**ORM的跨表操作
+
+```python
+对于一个用户对象:  userObj = UserInfo.objects.filter(username='xxx', password='xxx').first()
+```
+
+跨表查询当前用户的权限信息可以通过role字段进行两次跨表：**跨表时需要注意的是，筛选掉没有权限的角色**
+
+```python
+permission_queryset = userObj.roles.filter(permission__isnull=False).values(permission__id, permission__url).distinct()
+```
+
+用户表中的roles字段跨表到permission表中，查询到id和权限url。
+
+使用了 <u>**.values()**</u> 方法之后就已经执行了跨表操作：通过roles字段跨到Role表中；
+
+`distinct()` 去重操作，当多个角色拥有相同的权限的时候，就需要去重操作
+
+<u>注意：  **Queryset    **对象不可放入session中使用</u>
+
+******将用户拥有的所有权限写入session中**
+
+# 三、中间件重写类方法实现自定义中间件
+
+<u>**权限判断实现方法：**</u>
+
+<u>**1. django中间件，编写中间件类的时候需要继承中间件类 --> MiddlewareMixin，然后将编写的中间件注册到settings的中间件中即可实现**</u>
+
+**<u>2.重写类方法：</u>**
+
+```python
+class InitPermission(MiddlewareMixin):
+	def process_request(self, request):
+		pass
+```
+
+**<u>3.获取用户当前访问的URL地址：</u>**
+
+```python
+request.path_info
+```
+
+**<u>4.当用户再次访问的时候获取到用户当前访问的URL进行权限校验，获取到session中的所有权限使用正则模块进行匹配（权限url中需要加上起始符和终止符）</u>**
+
+```python
+current_url = request.path_info
+for item in permissionDict.values():
+    reg = '^%s$' % item['url']
+    if re.match(reg, current_url):
+        flag = True
+```
+
+**<u>5.关于中间件的返回值：如果在中间件中返回了值那么用户请求会被直接拦截，如果必须要返回，但是需要让用户执行后续内容，那么可以直接返回一个None，亦可往后继续执行后续代码程序</u>**
+

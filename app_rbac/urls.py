@@ -35,11 +35,3 @@ urlpatterns = [
     # 权限分配
     path('distribute/permissions/', menu.distribute_permissions, name='distribute_permissions')
 ]
-
-"""
-    反向解析 reverse 在解析带有参数的url时参数传递如下  
-    reverse('menu_edit', kwargs={'pk':1})
-    reverse('menu_del', args=(1,))
-    - 当路由中使用了分组时 /(?P<xxx>\.*)/ 使用kwargs=字典
-    - 否则使用args=元组
-"""

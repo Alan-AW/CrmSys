@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.utils.module_loading import import_string
 from django.conf import settings as sys
-from crm.models import UserInfo
 from app_rbac.service.initPermission import initPermission
 
 
