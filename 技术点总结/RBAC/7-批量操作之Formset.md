@@ -13,79 +13,99 @@
 ​    Permission <-------MTM-------> Role <-------MTM-------> User
 ​    *权限表中name字段表示的是每个权限(URL)的别名，必须要加上 条件：
 
-```python
-unique=True
-```
+## 一、Formset
 
- 	表示该字段是不可重复的
+> **对于数据库中的一行数据可以使用Form和ModelForm来进行验证，即对一个表单进行验证**
+>
+> **Formset是对多个表单进行批量操作，对多行数据进行批量验证**
 
-​    *为适应后续程序的可扩展性，UserInfo表中,不创建该表，让业务中的用户表继承该用户表
-
-```python
-class Meta:
-	abstract = True
-```
-
-​    *对于MTM字段或者Fk字段 关联上的表可以写成带引号的类名也可以直接写类名，
-​        区别：写上引号表示在内部做上关联；不写引号表示直接将关联的表内存地址引用过来
-
-### 二、中间件原理
-
-![image-20210912204416065](C:\Users\w84u\AppData\Roaming\Typora\typora-user-images\image-20210912204416065.png)
-
-![image-20210912204654191](C:\Users\w84u\AppData\Roaming\Typora\typora-user-images\image-20210912204654191.png)
-
-**ORM的跨表操作
+**实现方法：**# 对于后台
 
 ```python
-对于一个用户对象:  userObj = UserInfo.objects.filter(username='xxx', password='xxx').first()
+
+from django import forms
+form django.forms import formset_factory
+
+# 首先自定义一个Form表单
+class Formset(forms.Form):
+    ....
+    # 5个字段
+    pass
+
+# 视图中
+class MultiAdd(View):
+    def __init__():
+    	self.formset_class = formset_factory(Formset, extra=5) 
+    def get(request):
+        formset = self.formset_class()
+    	return render(request, 'multi.html', locals())
+    def post(request):
+        formset = generate_formset_class(data=request.POST)  # 这个formset对象是一个列表包含了一个个的form对象
+        # [form(字段，错误), form(字段，错误), form(字段，错误), form(字段，错误),]
+        if formset.is_valid():
+            object_list = []  # 要添加的数据
+            post_row_list = formset.cleaned_data  # 这个对象在formset中保存的是提交到后台的数据（字典套字典）
+            # {{字段数据, 错误信息}, {字段数据, 错误信息}, {字段数据, 错误信息}}
+            # formset对象与formset.cleaned_data对象是按照索引进行一一对应关系
+            # 在源码中，在循环数据的时候从0号索引循环到最后索引，就可以实现对formset.cleaned_data中的数据进行操作
+            # 即：下列循环中的 i 代表了字典中嵌套的字典，如果检测到某个字段的错误信息，那么直接将formset.errors[i]设置成				错误提示信息即可精确到某个字段的错误信息展示
+            # ****注意： 1.formset.cleaned_data[i] 与 2.formset.errors[i] 是互斥的 ！！！！！！！！！！！！！！！
+            # 1.表示formset提交过来的一行数据；2.表示整个formset中出现了错误，只要出现了错误那么第二次循环的时候便读取不				到 formset.cleaned_data 中的信息了，因为上一轮检测没有通过，直接被拦截掉了，
+            # 实际上每次循环的时候都会去 formset.cleaned_data 中获取到最新的数据，也就是说每调用一次都会去								formset.cleaned_data 中重新获取一次！！！！！！！！！！！！！
+            # 所以为了保证数据的完整性，需要提前将传递到后端的数据保存到一个变量中，循环的时候直接去这个变量中获取数据。
+            has_error = False
+            for i in range(0, formset.total_form_count()):
+                row_dict = post_row_list[i]
+                try:
+                    new_obj = Permission(**row_dict)
+                    new_obj.validate_unique()
+                    object_list.append(new_obj)  # 检测通过直接append到批量添加的数据中然后批量添加
+                except Exception as e:
+                    has_error = True
+                    formset.errors[i].update(e)
+                    generate_formset = formset
+            if not has_error:
+                Permission.objects.bulk_create(object_list, batch_size=100)  # 没有错误信息的时候直接批量添加操作
+        else:
+            generate_formset = formset
 ```
 
-跨表查询当前用户的权限信息可以通过role字段进行两次跨表：**跨表时需要注意的是，筛选掉没有权限的角色**
+**实现方法：**# 对于前端
 
-```python
-permission_queryset = userObj.roles.filter(permission__isnull=False).values(permission__id, permission__url).distinct()
+```django
+{% for form in formset %}
+	{% for field in form %}
+	    {{ field }}
+	{% endfor %}    
+{% endfor %}
+
+{# 这样便会在页面中生成5个form表单，如果嵌套到一个表格内进行展示那么就会出现多行数据： #}
+
+<form>
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <table>
+        <thead>
+            <tr rowspan="5">批量添加</tr>
+        </thead>
+        <tbody>
+            {% for form in formset %}
+                <tr>
+                    {% for field in form %}
+                        <td>
+                            {{ field }}
+                        </td>
+                    {% endfor %}  
+                </tr>
+            {% endfor %}
+        </tbody>
+</table>
+</form>
+
+
 ```
 
-用户表中的roles字段跨表到permission表中，查询到id和权限url。
 
-使用了 <u>**.values()**</u> 方法之后就已经执行了跨表操作：通过roles字段跨到Role表中；
 
-`distinct()` 去重操作，当多个角色拥有相同的权限的时候，就需要去重操作
-
-<u>注意：  **Queryset    **对象不可放入session中使用</u>
-
-******将用户拥有的所有权限写入session中**
-
-# 三、中间件重写类方法实现自定义中间件
-
-<u>**权限判断实现方法：**</u>
-
-<u>**1. django中间件，编写中间件类的时候需要继承中间件类 --> MiddlewareMixin，然后将编写的中间件注册到settings的中间件中即可实现**</u>
-
-**<u>2.重写类方法：</u>**
-
-```python
-class InitPermission(MiddlewareMixin):
-	def process_request(self, request):
-		pass
-```
-
-**<u>3.获取用户当前访问的URL地址：</u>**
-
-```python
-request.path_info
-```
-
-**<u>4.当用户再次访问的时候获取到用户当前访问的URL进行权限校验，获取到session中的所有权限使用正则模块进行匹配（权限url中需要加上起始符和终止符）</u>**
-
-```python
-current_url = request.path_info
-for item in permissionDict.values():
-    reg = '^%s$' % item['url']
-    if re.match(reg, current_url):
-        flag = True
-```
-
-**<u>5.关于中间件的返回值：如果在中间件中返回了值那么用户请求会被直接拦截，如果必须要返回，但是需要让用户执行后续内容，那么可以直接返回一个None，亦可往后继续执行后续代码程序</u>**
+## 二、自动发现项目中的URL
 
