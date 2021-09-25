@@ -5,9 +5,9 @@ from django.http import QueryDict
 def memoryUrl(request, name, *args, **kwargs):
     """
     生成带有原搜索条件的url，替代模版中的url(url携带参数)
-    :param request:
-    :param name:
-    :return:
+    :param request: request
+    :param name: url别名
+    :return: 拼接出带有原搜索条件的url后缀
     """
     basicUrl = reverse(name, args=args, kwargs=kwargs)
     if not request.GET:  # 当前url中无参数直接返回默认url

@@ -8,11 +8,6 @@
 
 *<u>用户再次发出请求，穿过中间件的时候仍然会做权限校验，是否登陆、是否有权限访问......</u>**
 
-### 一、表结构设计
-
-​    Permission <-------MTM-------> Role <-------MTM-------> User
-​    *权限表中name字段表示的是每个权限(URL)的别名，必须要加上 条件：
-
 ## 一、Formset
 
 > **对于数据库中的一行数据可以使用Form和ModelForm来进行验证，即对一个表单进行验证**
@@ -85,7 +80,10 @@ class MultiAdd(View):
 
 <form>
     {% csrf_token %}
+    
+    {# 表单中有formset的时候一定要加上这个标签，否则数据会丢失报错 #}
     {{ formset.management_form }}
+    
     <table>
         <thead>
             <tr rowspan="5">批量添加</tr>
@@ -106,8 +104,4 @@ class MultiAdd(View):
 ```
 
 
-
-## 二、自动发现项目中的URL
-
-## 实现思路：
 

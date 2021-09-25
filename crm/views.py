@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.utils.module_loading import import_string
 from django.conf import settings as sys
-from app_rbac.service.initPermission import initPermission
+from app_rbac.service.InitPermission import initPermission
 
 
 class Login(View):

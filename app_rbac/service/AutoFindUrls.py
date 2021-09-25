@@ -52,5 +52,5 @@ class AutoFindUrl:
         """
         url_ordered_dict = OrderedDict()  # {'rbac:menu_list': {name:'rbac:menu_list', url: 'xxx/xxx/menu_list'}}
         md = import_string(sys.ROOT_URLCONF)  # 根据字符串的形式去导入一个模块，在settings中 ROOT_URLCONF 指向的就是项目根路由的文件地址
-        self.recursion_urls(None, '/', md.urlpatterns, url_ordered_dict)
+        self.recursion_urls(None, '/', md.urlpatterns, url_ordered_dict)  # 递归的获取所有的url
         return url_ordered_dict

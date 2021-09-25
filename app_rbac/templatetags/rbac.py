@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.http import QueryDict
 import re
 from collections import OrderedDict
-from app_rbac.service import urls
+from app_rbac.service import MemoryUrls
 
 register = Library()  # 注册该组件
 
@@ -76,4 +76,4 @@ def memoryUrl(request, name, *args, **kwargs):
     :param name:
     :return:
     """
-    return urls.memoryUrl(request, name, *args, **kwargs)
+    return MemoryUrls.memoryUrl(request, name, *args, **kwargs)
