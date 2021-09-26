@@ -340,8 +340,7 @@ def multi_permissions(request):
         if not router_row_dict:
             continue
         if value['url'] != router_row_dict['url']:
-            value['url'] = 'Inconsistent'
-            Inconsistent_list = [value['url'], router_row_dict['url']]
+            value['url'] = '！与数据库不一致！'
     # 3.应该添加、删除、或者修改的权限有哪些
     # 3.1 计算出应该增加的 name
     if not generate_formset:
@@ -365,7 +364,6 @@ def multi_permissions(request):
         'generate_formset': generate_formset,
         'delete_row_list': delete_row_list,
         'update_formset': update_formset,
-        'Inconsistent_list': Inconsistent_list
     })
 
 
