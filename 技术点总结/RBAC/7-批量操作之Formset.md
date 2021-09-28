@@ -43,13 +43,13 @@ class MultiAdd(View):
             # {{字段数据, 错误信息}, {字段数据, 错误信息}, {字段数据, 错误信息}}
             # formset对象与formset.cleaned_data对象是按照索引进行一一对应关系
             # 在源码中，在循环数据的时候从0号索引循环到最后索引，就可以实现对formset.cleaned_data中的数据进行操作
-            # 即：下列循环中的 i 代表了字典中嵌套的字典，如果检测到某个字段的错误信息，那么直接将formset.errors[i]设置成				错误提示信息即可精确到某个字段的错误信息展示
+            # 即：下列循环中的 i 代表了字典中嵌套的字典，如果检测到某个字段的错误信息，那么直接将formset.errors[i]设置成错误提示信息即可精确到某个字段的错误信息展示
             # ****注意： 1.formset.cleaned_data[i] 与 2.formset.errors[i] 是互斥的 ！！！！！！！！！！！！！！！
             # 1.表示formset提交过来的一行数据；2.表示往formset中手动添加了一个错误，
             #只要出现了错误那么第二次循环的时候便读取不到 formset.cleaned_data 中的信息了。因为大前提是:
-            # if formset.is_valid():当我们循环的时候手动的添加了一个错误信息，那么这个条件就通不过，导致后面循环中调用				formset.cleaned_data的时候获取不到最新的信息
+            # if formset.is_valid():当我们循环的时候手动的添加了一个错误信息，那么这个条件就通不过，导致后面循环中调用formset.cleaned_data的时候获取不到最新的信息
             # 实际上每调用一次都会去 formset.cleaned_data 中重新获取一次数据！！
-            # 所以为了保证数据的完整性，需要提前将传递到后端的数据保存到一个变量中(object_list)，循环的时候直接去这个变量				中获取数据。
+            # 所以为了保证数据的完整性，需要提前将传递到后端的数据保存到一个变量中(object_list)，循环的时候直接去这个变量中获取数据。
             has_error = False
             for i in range(0, formset.total_form_count()):
                 row_dict = post_row_list[i]

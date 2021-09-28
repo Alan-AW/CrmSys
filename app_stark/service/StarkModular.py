@@ -215,8 +215,8 @@ class StarkHandler(object):
         if list_display:
             for key_or_func in list_display:
                 if isinstance(key_or_func, FunctionType):  # 判断这里面的变量是否是一个函数，如果是一个函数那么就去执行这个函数
-                    verbose_name = key_or_func(self, obj=None,
-                                               is_header=True)  # 调用执行函数self参数需要手动进行传递。（未实例化类执行类中的方法其实就是函数的调用）
+                    # 调用执行函数self参数需要手动进行传递。（未实例化类执行类中的方法其实就是函数的调用）
+                    verbose_name = key_or_func(self, obj=None, is_header=True)
                 else:
                     # 获取数据表中指定xxxx字段的 verbos_name 属性
                     verbose_name = self.model_class._meta.get_field(key_or_func).verbose_name
