@@ -3,11 +3,18 @@ stark组件使用文档
 1. 拷贝app_stark到任何系统
 2. 目标项目中注册app_stark： 'app_stark.apps.AppStarkConfig',
 3. 目标app的根目录中创建stark.py文件
-4. 配置路由信息：
+4. 在stark.py文件中导入site对象即可使用简单的stark组件提供的增删改查功能
+    from app_stark.service.StarkModular import site
+    site.register(model_class, handler_class=None, prev=None)
+        参数信息：
+        model_class: 是models中的数据表相关类
+        handler_class: 处理请求的视图函数所在的类
+        prev: 生成URL的前缀
+5. 配置路由信息：
     from app_stark.service.StarkModular import site
     path('stark/', site.urls),
-5. 自定制使用stark组件，进行快速的增删改查
-6. 组件内部扩展：
+6. 自定制使用stark组件，进行快速的增删改查
+7. 组件内部扩展：
     list_display = list()  # 自定义列的展示内容
     has_add_btn = True  # 是否显示 添加 按钮
     order_list = list()  # 排序规则
