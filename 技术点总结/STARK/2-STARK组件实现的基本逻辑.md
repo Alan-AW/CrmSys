@@ -21,16 +21,41 @@ def ready(self):
 class StarkHandler(object):
     def __init__(self):
         self._registry = []
-        
+        self.app_name = 'stark'
+        self.namespace = 'stark'
+    
+    def register(self, model_class, handler_class=None, prev=None):
+        # 使用stark组件时调用的方法，获取到传递过来的参数
+        """
+        model_class: 要操作的表对象(类)
+        handler_class: 对表进行增删改查操作的类
+        prev: 生成路由的前缀
+        """
+        self._registry.append({
+            'model_class': model_class,
+            'handler': handler_class(self, model_class, prev),
+            'prev': prev
+        })
+    
     def get_urls(self):
+        # 动态生成URL
         patterns = []
         for item in self._registry:
-            patterns.append(item)
+            model_class = item['model_class']
+            handler = item['handler']
+            prev = item['prev']
+            app_name, model_name = model_class._meta.app_label, model_class._meta.model_label
+            if prev:
+                patterns.append(path('%s/%s/%s/' % (app_name, model_name, prev), (handler.get_urls(), None, None)))
+                # (handler.get_urls(), None, None) 是再次进行了路由分发，这是一个元祖，第一个参数调用的默认的stark组件提				 供的视图函数操作类中的路由分发，返回的是一个列表，
+            else:
+                patterns.append(path('%s/%s/' % (app_name, model_name), (handler.get_urls(), None, None)))
         return patterns
         
     @property
     def urls(self):
-        return (self.get_urls(), 'appname', 'namespace')
+        #　路由中调用的方法
+        return (self.get_urls(), self.app_name, self.namespace)
     
 site = StarkHandler()
 ```

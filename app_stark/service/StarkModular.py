@@ -412,7 +412,6 @@ class StarkHandler(object):
         """
         默认生成4组增删改查功能路由。如需自定制功能路由可在APP下的stark中重写该方法实现自动定制
         """
-        app_label, model_name = self.model_class._meta.app_label, self.model_class._meta.model_name
         patterns = [
             path('list/', self.wrapper(self.changelist_view), name=self.get_list_url_name),
             path('add/', self.wrapper(self.add_view), name=self.get_add_url_name),

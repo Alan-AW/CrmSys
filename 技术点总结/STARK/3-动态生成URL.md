@@ -12,3 +12,31 @@ model_label: model_class._meta.model_label
 """
 ```
 
+## 二、动态生成URL
+
+```python
+if prev:
+    # 自定制前缀，并且再次进行路由分发到默认的公共视图函数中生成的增删改查的路由地址
+    patterns.append(path('%s/%s/%s/' % (applabel, modelname, prev), (handler.get_urls(), None, None)))
+else:
+    # 无须自定制前缀，并且再次进行路由分发到默认的公共视图函数中生成的增删改查的路由地址
+    patterns.append(path('%s/%s/' % (applabel, modelname), (handler.get_urls(), None, None)))
+```
+
+路由中调用动态的URL：
+
+```python
+@property
+def urls(self):
+    return (self.get_url(), self.app_name, self.namespace)
+
+patterns = [
+    ...
+    path('stark/', site.urls)
+]
+```
+
+
+
+
+
