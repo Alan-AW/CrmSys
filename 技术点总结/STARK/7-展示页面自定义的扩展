@@ -1,0 +1,72 @@
+# STARK组件:帮助开发者对数据表快速进行 增删改查+ 的功能组件
+
+#### 一、将list_display的项传入函数，页面展示获取数据的时候做判断，如果是一个函数，那么就去执行这个函数，否则就去数据库查找当前字段的数据用于展示
+
+**1.1判断一个参数是否是函数：**
+
+```python
+def edit(self, obj=None, is_header=False):
+    pass
+
+list_display = ['name', 'email', 'depart', edit]
+
+for key_or_func in list_display:
+    if isinstance(key_or_func, FunctionType):
+        key_or_func(self, self.model_class, False)
+    else:
+        pass
+```
+
+**1.2实现思路：在自定义list_display列表中将自定义的编辑和删除功能的函数传入其中，在循环list_display列表时做判断，如果是函数，那么就去执行函数，否则就去数据库查找字段所对应的数据，**
+
+```python
+# stark.py
+class UserInfoHandler(StarkHandler):
+    def edit(self, obj=None, is_header=False):
+        if is_header:
+            return '编辑'
+        return mark_safe('<a href="">编辑</a>')
+    
+    def delete(self, obj=None, is_header=False):
+        if is_header:
+            return '删除'
+        return mark_safe('<a href="">删除</a>')
+    
+    list_display = ['name', 'age', 'email', edit, delete]
+
+    
+# StarkHandler
+class StarkHandler(objects):
+    def change_list_view():
+        # 处理表头
+        for key_or_func in self.list_display:
+            if isinstance(key_or_func, FunctionType):
+                key_or_func(self, obj=self.model_class, is_header=True)
+            else:
+                pass
+        # 处理内容
+        for key_or_func in self.list_display:
+            if isinstance(key_or_func, FunctionType):
+                key_or_func(self, obj=self.model_class, is_header=False)
+            else:
+                pass
+
+```
+
+#### 二、函数和方法
+
+```python
+class Foo(object):
+    def func(self, name):
+        print(name)
+        
+obj = Foo()
+obj.func('stark')  # 方法调用
+
+Foo.func(obj, 'rbac')  # 函数调用
+
+# 证明：
+print(obj.func)  # bound method Foo.func  绑定方法
+print(Foo.func)  # function Foo.func  		函数
+```
+
