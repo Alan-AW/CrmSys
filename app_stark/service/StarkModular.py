@@ -457,9 +457,9 @@ class StarkSite(object):
         """
         这个操作的结果：
         _registry = [
-            {'model_class': models.Depart, 'handler': handler_class(models.Depart)}
-            {'model_class': models.User, 'handler': handler_class(models.User)}
-            {'model_class': models.Host, 'handler': handler_class(models.Host)}
+            {'model_class': models.Depart, 'handler': handler_class(models.Depart, prev), 'prev': prev}
+            {'model_class': models.User, 'handler': handler_class(models.User, prev), 'prev': prev}
+            {'model_class': models.Host, 'handler': handler_class(models.Host, prev), 'prev': prev}
         ]
         键：model_class       handler_class       
         值：对应的是一个数据表  实例化handler方法，并且将对应的数据表作为参数传入其中做对应的增删改查操作
